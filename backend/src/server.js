@@ -9,6 +9,8 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const publicationRoutes = require('./routes/publicationRoutes');
+const activityRoutes = require('./routes/activityRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 // Load environment variables
 dotenv.config();
 
@@ -26,6 +28,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/publications', publicationRoutes);
+app.use('/api/activities', activityRoutes);
+app.use('/api/contacts', contactRoutes);
 // Basic route
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Laboratory Website API' });
