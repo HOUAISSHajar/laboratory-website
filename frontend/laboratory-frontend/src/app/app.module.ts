@@ -6,7 +6,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
+
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
+import { ProjectsModule } from './projects/projects.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { MatCardModule } from '@angular/material/card';
@@ -22,12 +24,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     MainLayoutComponent,
     DashboardComponent
+
   ],
   imports: [
     BrowserModule,
@@ -46,7 +52,11 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatMenuModule,
     MatDividerModule,
     MatProgressBarModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTableModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+    ProjectsModule
   ],
   providers: [
     provideAnimationsAsync(),

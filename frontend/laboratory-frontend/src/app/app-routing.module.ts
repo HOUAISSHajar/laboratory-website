@@ -12,6 +12,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { 
+        path: 'projects', 
+        loadChildren: () => import('./projects/projects.module')
+          .then(m => m.ProjectsModule) 
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
