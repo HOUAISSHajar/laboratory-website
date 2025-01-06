@@ -19,6 +19,23 @@ const routes: Routes = [
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
+  },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      {
+        path: 'projects',
+        loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)
+      },
+      {
+        path: 'publications',
+        loadChildren: () => import('./publications/publications.module').then(m => m.PublicationsModule)
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
   }
 
 ];
