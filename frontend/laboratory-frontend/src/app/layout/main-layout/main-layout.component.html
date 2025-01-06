@@ -1,0 +1,61 @@
+
+<div class="layout-container">
+    <mat-toolbar color="primary" class="toolbar">
+      <button mat-icon-button (click)="toggleSidebar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Laboratory Website</span>
+      <span class="spacer"></span>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+  
+    <mat-sidenav-container class="sidenav-container">
+      <mat-sidenav #sidenav mode="side" opened class="sidenav">
+        <mat-nav-list>
+          <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </a>
+          <a mat-list-item routerLink="/projects" routerLinkActive="active">
+            <mat-icon>work</mat-icon>
+            <span>Projects</span>
+          </a>
+          <a mat-list-item routerLink="/publications" routerLinkActive="active">
+            <mat-icon>library_books</mat-icon>
+            <span>Publications</span>
+          </a>
+          <a mat-list-item routerLink="/activities" routerLinkActive="active">
+            <mat-icon>event</mat-icon>
+            <span>Activities</span>
+          </a>
+          <ng-container *ngIf="isAdmin">
+            <mat-divider></mat-divider>
+            <a mat-list-item routerLink="/users" routerLinkActive="active">
+              <mat-icon>people</mat-icon>
+              <span>Users</span>
+            </a>
+            <a mat-list-item routerLink="/contacts" routerLinkActive="active">
+              <mat-icon>contact_mail</mat-icon>
+              <span>Contact Messages</span>
+            </a>
+          </ng-container>
+        </mat-nav-list>
+      </mat-sidenav>
+  
+      <mat-sidenav-content class="content">
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
