@@ -12,8 +12,8 @@ router.get('/', projectController.getAllProjects);
 // Get project by ID - accessible by all authenticated users
 router.get('/:id', projectController.getProjectById);
 
-// Create project - only administrators and faculty researchers can create projects
-router.post('/', authorize(['administrator', 'faculty_researcher']), projectController.createProject);
+// Create project - only administrators and faculty researchers and phd_researcher can create projects
+router.post('/', authorize(['administrator', 'faculty_researcher', 'phd_researcher']), projectController.createProject);
 
 // Update project - administrators, faculty researchers, and project members can update
 router.put('/:id', projectController.updateProject);

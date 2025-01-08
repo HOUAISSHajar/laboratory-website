@@ -60,15 +60,17 @@
                 <button mat-menu-item (click)="viewPublication(publication._id)">
                   <mat-icon>visibility</mat-icon>
                   <span>View</span>
-                </button>
-                <button mat-menu-item (click)="editPublication(publication._id)">
-                  <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
-                </button>
-                <button mat-menu-item (click)="deletePublication(publication._id)">
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-                </button>
+              </button>
+              <ng-container *ngIf="userRole !== 'associated_member'">
+                  <button mat-menu-item (click)="editPublication(publication._id)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Edit</span>
+                  </button>
+                  <button *ngIf="userRole === 'administrator'" mat-menu-item (click)="deletePublication(publication._id)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                  </button>
+              </ng-container>
               </mat-menu>
             </td>
           </ng-container>

@@ -24,6 +24,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './publication-list.component.scss'
 })
 export class PublicationListComponent implements OnInit {
+  userRole: string = '';
   publications: any[] = [];
   isLoading = true;
   canCreatePublication = false;
@@ -37,10 +38,11 @@ export class PublicationListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const userRole = this.authService.getCurrentUser()?.role;
-    this.canCreatePublication = ['administrator', 'faculty_researcher', 'phd_researcher'].includes(userRole || '');
+    const currentUser = this.authService.getCurrentUser();
+    this.userRole = currentUser?.role || '';
+    this.canCreatePublication = ['administrator', 'faculty_researcher', 'phd_researcher'].includes(this.userRole);
     this.loadPublications();
-  }
+}
 
   loadPublications() {
     this.publicationService.getAllPublications().subscribe({

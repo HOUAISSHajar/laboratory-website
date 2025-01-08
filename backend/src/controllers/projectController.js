@@ -1,12 +1,17 @@
 const Project = require('../models/Project');
 
 const projectController = {
-    // Create new project
+    // Update createProject permission
     createProject: async (req, res) => {
         try {
+            // Check if user has permission to create projects
+            if (!['administrator', 'faculty_researcher', 'phd_researcher'].includes(req.user.role)) {
+                return res.status(403).json({ message: 'Not authorized to create projects' });
+            }
+
             const project = new Project({
                 ...req.body,
-                members: [...req.body.members, req.user.userId] // Add creator as member
+                members: [...req.body.members, req.user.userId]
             });
             await project.save();
             await project.populate('members', 'firstName lastName email');

@@ -94,11 +94,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './project-list.component.scss'
 })
 export class ProjectListComponent implements OnInit {
+  userRole: string = '';
   projects: any[] = [];
   isLoading = true;
   canCreateProject = false;
   displayedColumns: string[] = ['title', 'status', 'startDate', 'members', 'actions'];
-
+  
   constructor(
     private projectService: ProjectService,
     private authService: AuthService,
@@ -107,10 +108,11 @@ export class ProjectListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    const userRole = this.authService.getCurrentUser()?.role;
-    this.canCreateProject = ['administrator', 'faculty_researcher'].includes(userRole || '');
+    const currentUser = this.authService.getCurrentUser();
+    this.userRole = currentUser?.role || '';
+    this.canCreateProject = ['administrator', 'faculty_researcher', 'phd_researcher'].includes(this.userRole);
     this.loadProjects();
-  }
+}
 
   loadProjects() {
     this.projectService.getAllProjects().subscribe({
