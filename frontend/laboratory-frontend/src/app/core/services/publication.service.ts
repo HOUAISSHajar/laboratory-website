@@ -34,4 +34,7 @@ export class PublicationService {
   searchPublications(query: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/search?query=${query}`);
   }
+  getUserPublications(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user`);
+  }
 }

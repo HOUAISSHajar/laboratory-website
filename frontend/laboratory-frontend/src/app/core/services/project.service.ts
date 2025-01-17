@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -12,7 +12,13 @@ export class ProjectService {
   constructor(private http: HttpClient) { }
 
   getAllProjects(): Observable<any> {
-    return this.http.get(this.apiUrl);
+    // The backend will handle the filtering based on the user's role
+    return this.http.get(this.apiUrl).pipe(
+      catchError(error => {
+        console.error('Error fetching projects:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   getProjectById(id: string): Observable<any> {

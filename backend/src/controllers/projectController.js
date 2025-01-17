@@ -24,8 +24,19 @@ const projectController = {
     // Get all projects
     getAllProjects: async (req, res) => {
         try {
-            const projects = await Project.find()
-                .populate('members', 'firstName lastName email');
+            const { userId, role } = req.user;
+            let query = {};
+            
+            // If user is faculty_researcher or phd_researcher, only show their projects
+            if (['faculty_researcher', 'phd_researcher'].includes(role)) {
+                query.members = userId;
+            }
+            // Administrator and associated_member will see all projects (no query filter)
+            
+            const projects = await Project.find(query)
+                .populate('members', 'firstName lastName email')
+                .sort({ createdAt: -1 });
+            
             res.json(projects);
         } catch (error) {
             res.status(500).json({ message: error.message });

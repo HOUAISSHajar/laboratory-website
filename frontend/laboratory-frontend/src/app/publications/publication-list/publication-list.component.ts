@@ -44,7 +44,12 @@ export class PublicationListComponent implements OnInit {
     this.loadPublications();
 }
 
-  loadPublications() {
+loadPublications() {
+  this.isLoading = true;
+  
+  // Check user role and load appropriate publications
+  if (this.userRole === 'administrator' || this.userRole === 'associated_member') {
+    // Administrators and associated members can see all publications
     this.publicationService.getAllPublications().subscribe({
       next: (data) => {
         this.publications = data;
@@ -55,7 +60,20 @@ export class PublicationListComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  } else if (['faculty_researcher', 'phd_researcher'].includes(this.userRole)) {
+    // Researchers can only see their own publications
+    this.publicationService.getUserPublications().subscribe({
+      next: (data) => {
+        this.publications = data;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.snackBar.open('Error loading publications', 'Close', { duration: 3000 });
+        this.isLoading = false;
+      }
+    });
   }
+}
 
   createNew() {
     this.router.navigate(['/publications/new']);

@@ -3,6 +3,9 @@ const router = express.Router();
 const activityController = require('../controllers/activityController');
 const { auth, authorize } = require('../middleware/auth');
 
+
+router.get('/user', auth, activityController.getUserActivities);
+
 // Get all activities - public access
 router.get('/', activityController.getAllActivities);
 
@@ -14,7 +17,7 @@ router.use(auth);
 
 // Create activity - only faculty researchers and administrators
 router.post('/', 
-    authorize(['administrator', 'faculty_researcher']),
+    authorize(['administrator', 'faculty_researcher', 'phd_researcher']),
     activityController.createActivity
 );
 

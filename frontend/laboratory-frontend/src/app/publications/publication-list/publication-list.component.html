@@ -1,6 +1,10 @@
 <div class="publications-container">
     <div class="header">
-      <h1>Publications</h1>
+      <h1>
+        {{ userRole === 'administrator' || userRole === 'associated_member' 
+            ? 'All Publications' 
+            : 'My Publications' }}
+      </h1>
       <button *ngIf="canCreatePublication" 
               mat-raised-button 
               color="primary" 

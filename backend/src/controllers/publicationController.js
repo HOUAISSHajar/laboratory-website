@@ -124,7 +124,23 @@ const publicationController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+     // Add this new method
+  getUserPublications: async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      
+      const publications = await Publication.find({
+        authors: userId
+      })
+      .populate('authors', 'firstName lastName email')
+      .sort({ year: -1, createdAt: -1 });
+      
+      res.json(publications);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
+  }
 };
 
 module.exports = publicationController;

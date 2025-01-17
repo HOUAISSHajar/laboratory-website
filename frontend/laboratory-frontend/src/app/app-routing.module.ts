@@ -36,6 +36,18 @@ const routes: Routes = [
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
+  },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      // ... other routes ...
+      {
+        path: 'activities',
+        loadChildren: () => import('./activities/activities.module').then(m => m.ActivitiesModule)
+      },
+    ]
   }
 
 ];

@@ -1,1 +1,148 @@
-<p>project-detail works!</p>
+<!-- <div class="project-detail-container">
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <div *ngIf="project">
+      <div class="header">
+        <h1>{{project.title}}</h1>
+        <mat-chip-set>
+          <mat-chip [color]="project.status === 'ongoing' ? 'accent' : 'primary'">
+            {{project.status}}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+  
+      <mat-card>
+        <mat-card-content>
+          <h2>Summary</h2>
+          <p>{{project.summary}}</p>
+  
+          <h2>Timeline</h2>
+          <p>Start Date: {{project.startDate | date}}</p>
+          <p>End Date: {{project.endDate | date}}</p>
+  
+          <h2>Members</h2>
+          <mat-chip-set>
+            <mat-chip *ngFor="let member of project.members">
+              {{member.firstName}} {{member.lastName}}
+            </mat-chip>
+          </mat-chip-set>
+  
+          <h2>Expected Results</h2>
+          <p>{{project.expectedResults}}</p>
+  
+          <h2>Documents</h2>
+          <div *ngIf="project.documents && project.documents.length > 0">
+            <mat-list>
+              <mat-list-item *ngFor="let doc of project.documents">
+                <mat-icon matListItemIcon>description</mat-icon>
+                <div matListItemTitle>{{doc.title}}</div>
+                <div matListItemLine>Uploaded: {{doc.uploadDate | date}}</div>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <p *ngIf="!project.documents || project.documents.length === 0">
+            No documents available
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div> -->
+
+  <div class="project-detail-container">
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <div *ngIf="project" class="project-content">
+      <div class="header">
+        <div class="title-section">
+          <h1>{{project.title}}</h1>
+          <mat-chip-set>
+            <mat-chip [color]="project.status === 'ongoing' ? 'accent' : 'primary'" selected>
+              {{project.status | titlecase}}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        
+        <button mat-raised-button color="primary" routerLink="/projects">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Projects
+        </button>
+      </div>
+  
+      <div class="info-grid">
+        <mat-card class="summary-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>description</mat-icon>
+            <mat-card-title>Project Summary</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{project.summary}}</p>
+          </mat-card-content>
+        </mat-card>
+  
+        <mat-card class="timeline-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>schedule</mat-icon>
+            <mat-card-title>Timeline</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="timeline-info">
+              <div class="date-item">
+                <strong>Start Date:</strong>
+                <span>{{project.startDate | date:'mediumDate'}}</span>
+              </div>
+              <div class="date-item">
+                <strong>End Date:</strong>
+                <span>{{project.endDate | date:'mediumDate'}}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+  
+        <mat-card class="members-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>people</mat-icon>
+            <mat-card-title>Team Members</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-chip-set>
+              <mat-chip *ngFor="let member of project.members" class="member-chip">
+                <mat-icon>person</mat-icon>
+                {{member.firstName}} {{member.lastName}}
+              </mat-chip>
+            </mat-chip-set>
+          </mat-card-content>
+        </mat-card>
+  
+        <mat-card class="results-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>insights</mat-icon>
+            <mat-card-title>Expected Results</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{project.expectedResults || 'No expected results specified'}}</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+  
+      <mat-card class="documents-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>folder</mat-icon>
+          <mat-card-title>Project Documents</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="project.documents && project.documents.length > 0">
+            <mat-list>
+              <mat-list-item *ngFor="let doc of project.documents">
+                <mat-icon matListItemIcon>description</mat-icon>
+                <div matListItemTitle>{{doc.title}}</div>
+                <div matListItemLine>Uploaded: {{doc.uploadDate | date}}</div>
+              </mat-list-item>
+            </mat-list>
+          </div>
+          <p *ngIf="!project.documents || project.documents.length === 0" class="no-docs">
+            No documents available
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>

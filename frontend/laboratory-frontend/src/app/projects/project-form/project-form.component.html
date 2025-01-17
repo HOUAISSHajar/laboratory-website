@@ -1,1 +1,64 @@
-<p>project-form works!</p>
+<div class="project-form-container">
+  <h1>{{isEditing ? 'Edit Project' : 'Create New Project'}}</h1>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" required>
+          <mat-error *ngIf="projectForm.get('title')?.hasError('required')">
+            Title is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Summary</mat-label>
+          <textarea matInput formControlName="summary" rows="4" required></textarea>
+          <mat-error *ngIf="projectForm.get('summary')?.hasError('required')">
+            Summary is required
+          </mat-error>
+        </mat-form-field>
+
+        <div class="date-fields">
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endDate" required>
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status" required>
+            <mat-option value="ongoing">Ongoing</mat-option>
+            <mat-option value="completed">Completed</mat-option>
+            <mat-option value="pending">Pending</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Expected Results</mat-label>
+          <textarea matInput formControlName="expectedResults" rows="4"></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/projects">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="projectForm.invalid || isLoading">
+            {{isEditing ? 'Update' : 'Create'}} Project
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

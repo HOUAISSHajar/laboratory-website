@@ -3,6 +3,8 @@ const router = express.Router();
 const publicationController = require('../controllers/publicationController');
 const { auth, authorize } = require('../middleware/auth');
 
+//  new route for user-specific publications
+router.get('/user', auth, publicationController.getUserPublications);
 // Get all publications - public access
 router.get('/', publicationController.getAllPublications);
 

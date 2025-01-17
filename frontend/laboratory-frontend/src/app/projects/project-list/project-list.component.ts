@@ -99,6 +99,7 @@ export class ProjectListComponent implements OnInit {
   isLoading = true;
   canCreateProject = false;
   displayedColumns: string[] = ['title', 'status', 'startDate', 'members', 'actions'];
+  pageTitle: string='';
   
   constructor(
     private projectService: ProjectService,
@@ -111,8 +112,16 @@ export class ProjectListComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
     this.userRole = currentUser?.role || '';
     this.canCreateProject = ['administrator', 'faculty_researcher', 'phd_researcher'].includes(this.userRole);
+    
+    // Add a title based on role
+    if (['faculty_researcher', 'phd_researcher'].includes(this.userRole)) {
+      this.pageTitle = 'My Projects';
+    } else {
+      this.pageTitle = 'All Projects';
+    }
+    
     this.loadProjects();
-}
+  }
 
   loadProjects() {
     this.projectService.getAllProjects().subscribe({

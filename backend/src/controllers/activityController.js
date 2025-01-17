@@ -141,7 +141,23 @@ const activityController = {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
+    },
+
+    getUserActivities: async (req, res) => {
+        try {
+            const activities = await Activity.find({
+                organizers: req.user.userId
+            })
+            .populate('organizers', 'firstName lastName email')
+            .populate('participants', 'firstName lastName email')
+            .sort({ date: -1 });
+            
+            res.json(activities);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
+
 };
 
 module.exports = activityController;
