@@ -92,6 +92,10 @@ const routes: Routes = [
         path: 'profile',
         loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule)
       },
+      {
+        path: 'messages',
+        loadChildren: () => import('./messages/messages.module').then(m => m.MessagesModule)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
      
     ]

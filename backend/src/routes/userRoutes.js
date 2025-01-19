@@ -7,7 +7,7 @@ const { auth, authorize } = require('../middleware/auth');
 router.use(auth);
 
 // Only administrators can get all users
-router.get('/', authorize(['administrator']), userController.getAllUsers);
+router.get('/', authorize(['administrator', 'faculty_researcher', 'phd_researcher', 'associated_member']), userController.getAllUsers);
 
 // Users can view any profile
 router.get('/:id', userController.getUserById);
