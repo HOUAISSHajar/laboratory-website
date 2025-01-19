@@ -26,7 +26,7 @@ import { AuthService } from '../../core/services/auth.service';
 export class MainLayoutComponent implements OnInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   isAdmin = false;
-
+  userRole = '';
   constructor(
     private authService: AuthService,
     private router: Router
@@ -35,6 +35,7 @@ export class MainLayoutComponent implements OnInit {
   ngOnInit() {
     const currentUser = this.authService.getCurrentUser();
     this.isAdmin = currentUser?.role === 'administrator';
+    this.userRole = currentUser?.role || '';
   }
 
   toggleSidebar() {

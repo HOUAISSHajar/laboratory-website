@@ -1,0 +1,23 @@
+/* src/app/profile/profile.component.scss */
+.profile-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 20px 0;
+    }
+  
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+  
+    mat-form-field {
+      width: 100%;
+    }
+  }

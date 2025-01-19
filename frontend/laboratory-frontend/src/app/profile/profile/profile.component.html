@@ -1,0 +1,60 @@
+<!-- src/app/profile/profile.component.html -->
+<div class="profile-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>My Profile</mat-card-title>
+      </mat-card-header>
+  
+      <mat-card-content>
+        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <div class="form-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" required>
+              <mat-error *ngIf="profileForm.get('firstName')?.hasError('required')">
+                First name is required
+              </mat-error>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" required>
+              <mat-error *ngIf="profileForm.get('lastName')?.hasError('required')">
+                Last name is required
+              </mat-error>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Department</mat-label>
+              <input matInput formControlName="department">
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="4"></textarea>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Research Interests (comma-separated)</mat-label>
+              <input matInput formControlName="researchInterests"
+                     placeholder="e.g., Machine Learning, Data Science, AI">
+            </mat-form-field>
+          </div>
+  
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit"
+                    [disabled]="profileForm.invalid || isLoading">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
