@@ -65,9 +65,13 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
   {
     path: '',
+    loadChildren: () => import('./public/public.module').then(m => m.PublicModule)
+  },
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'admin',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [

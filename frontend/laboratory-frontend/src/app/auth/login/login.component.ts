@@ -33,7 +33,7 @@ export class LoginComponent {
       
       this.authService.login(email, password).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/admin/dashboard']);
         },
         error: (error) => {
           this.snackBar.open(error.error.message || 'Login failed', 'Close', {

@@ -1,0 +1,32 @@
+
+<div class="public-layout">
+    <mat-toolbar class="header">
+      <div class="container">
+        <div class="logo">
+          <img src="assets/images/logo.png" alt="Laboratory Logo">
+          <span>Laboratory Name</span>
+        </div>
+        
+        <nav class="navigation">
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+          <a routerLink="/about">About</a>
+          <a routerLink="/research">Research</a>
+          <a routerLink="/members">Members</a>
+          <a routerLink="/contact">Contact</a>
+          <button mat-raised-button color="accent" (click)="navigateToLogin()">
+            Login
+          </button>
+        </nav>
+      </div>
+    </mat-toolbar>
+  
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  
+    <footer>
+      <div class="container">
+        <p>&copy; 2024 Laboratory Name. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>

@@ -1,0 +1,84 @@
+
+<div class="home-container">
+    <!-- Hero Section with Carousel -->
+    <section class="hero-section">
+      <carousel [interval]="5000" [showIndicators]="true" [isAnimated]="true">
+        <slide *ngFor="let announcement of announcements">
+          <div class="carousel-slide">
+            <img [src]="announcement.image" [alt]="announcement.title">
+            <div class="carousel-caption">
+              <h2>{{announcement.title}}</h2>
+            </div>
+          </div>
+        </slide>
+      </carousel>
+    </section>
+  
+    <!-- Latest Updates Section -->
+    <section class="updates-section">
+      <div class="container">
+        <!-- Recent Projects -->
+        <div class="section-container">
+          <h2 class="section-title">Recent Projects</h2>
+          <div class="cards-grid">
+            <mat-card *ngFor="let project of recentProjects" class="update-card">
+              <mat-card-header>
+                <mat-card-title>{{project.title}}</mat-card-title>
+                <mat-card-subtitle>Research Project</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{project.summary | slice:0:150}}...</p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button color="primary">Learn More</button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+  
+        <!-- Recent Publications -->
+        <div class="section-container">
+          <h2 class="section-title">Latest Publications</h2>
+          <div class="cards-grid">
+            <mat-card *ngFor="let publication of recentPublications" class="update-card">
+              <mat-card-header>
+                <mat-card-title>{{publication.title}}</mat-card-title>
+                <mat-card-subtitle>{{publication.type}} - {{publication.year}}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p *ngIf="publication.abstract">{{publication.abstract | slice:0:150}}...</p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button color="primary">Read More</button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+  
+        <!-- Upcoming Events -->
+        <div class="section-container">
+          <h2 class="section-title">Upcoming Events</h2>
+          <div class="cards-grid">
+            <mat-card *ngFor="let event of upcomingEvents" class="update-card">
+              <mat-card-header>
+                <mat-card-title>{{event.title}}</mat-card-title>
+                <mat-card-subtitle>
+                  {{event.date | date}} - {{event.type}}
+                </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{event.description | slice:0:150}}...</p>
+                <p class="event-location">
+                  <mat-icon>location_on</mat-icon>
+                  {{event.location}}
+                </p>
+              </mat-card-content>
+              <mat-card-actions>
+                <button mat-button color="primary">Event Details</button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
