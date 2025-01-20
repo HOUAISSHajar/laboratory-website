@@ -4,6 +4,9 @@ import { MessageService } from '../../core/services/message.service';
 import { UserService } from '../../core/services/user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
+
 @Component({
   selector: 'app-messages',
   standalone: false,
@@ -23,7 +26,8 @@ export class MessagesComponent implements OnInit {
     private messageService: MessageService,
     private userService: UserService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.messageForm = this.fb.group({
       receiverId: ['', Validators.required],
@@ -31,6 +35,46 @@ export class MessagesComponent implements OnInit {
       content: ['', Validators.required]
     });
   }
+
+  //open message dialog
+  openMessageDialog(message: any, isSentMessage: boolean) {
+    if (!isSentMessage && !message.isRead) {
+      this.markAsRead(message._id);
+    }
+    const dialogRef = this.dialog.open(MessageDialogComponent, {
+      data: { message, isSentMessage }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (result.action === 'delete') {
+          this.deleteMessage(result.messageId);
+        } else if (result.action === 'resend') {
+          // Update the form with the resend data
+          this.messageForm.patchValue({
+            receiverId: result.data.receiverId,
+            subject: result.data.subject,
+            content: result.data.content
+          });
+          // Call the existing sendMessage method
+          this.sendMessage();
+        }
+      }
+    });
+  }
+  //delete message dialog
+  deleteMessage(messageId: string) {
+    this.messageService.deleteMessage(messageId).subscribe({
+      next: () => {
+        this.snackBar.open('Message deleted successfully', 'Close', { duration: 3000 });
+        this.loadMessages(); // Reload messages after deletion
+      },
+      error: (error) => {
+        this.snackBar.open('Error deleting message', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
 
   ngOnInit() {
     this.loadMessages();

@@ -1,0 +1,46 @@
+<div class="message-dialog">
+    <h2 mat-dialog-title>
+      {{ isSentMessage ? 'Sent Message' : 'Received Message' }}
+      <button mat-icon-button class="close-button" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </h2>
+  
+    <mat-dialog-content>
+      <form [formGroup]="messageForm">
+        <div class="message-info">
+          <p>
+            <strong>{{ isSentMessage ? 'To' : 'From' }}:</strong>
+            {{ isSentMessage ? data.message.receiver?.firstName + ' ' + data.message.receiver?.lastName : 
+                              data.message.sender?.firstName + ' ' + data.message.sender?.lastName }}
+          </p>
+          <p><strong>Date:</strong> {{ data.message.createdAt | date:'medium' }}</p>
+        </div>
+  
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Subject</mat-label>
+          <input matInput formControlName="subject">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Message</mat-label>
+          <textarea matInput formControlName="content" rows="6"></textarea>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+      <button mat-button color="warn" (click)="onDelete()">
+        Delete
+      </button>
+      <ng-container *ngIf="isSentMessage">
+        <button mat-button *ngIf="!isEditing" (click)="enableEditing()">
+          Edit & Resend
+        </button>
+        <button mat-raised-button color="primary" *ngIf="isEditing" 
+                [disabled]="!messageForm.valid" (click)="onSubmit()">
+          Resend
+        </button>
+      </ng-container>
+    </mat-dialog-actions>
+  </div>

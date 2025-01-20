@@ -12,6 +12,10 @@ export class MessageService {
 
   constructor(private http: HttpClient) { }
 
+  deleteMessage(messageId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${messageId}`);
+  }
+
   sendMessage(message: any): Observable<any> {
     return this.http.post(this.apiUrl, message);
   }

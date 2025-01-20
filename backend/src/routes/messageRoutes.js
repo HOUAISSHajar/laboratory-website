@@ -19,4 +19,7 @@ router.get('/sent', messageController.getSentMessages);
 // Mark message as read
 router.patch('/:id/read', messageController.markAsRead);
 
+//delete message 
+router.delete('/:id', messageController.deleteMessage);
+
 module.exports = router;

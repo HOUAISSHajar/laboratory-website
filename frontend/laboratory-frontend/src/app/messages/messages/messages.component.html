@@ -12,7 +12,7 @@
             <mat-list>
               <mat-list-item *ngFor="let message of inboxMessages" 
                [class.unread]="!message.isRead"
-               (click)="markAsRead(message._id)">
+               (click)="openMessageDialog(message, false)">
     <mat-icon matListIcon>{{ message.isRead ? 'mail_outline' : 'mail' }}</mat-icon>
     <div matLine class="message-subject">{{message.subject}}</div>
     <div matLine class="message-sender">
@@ -67,7 +67,8 @@
         <mat-tab label="Sent">
           <ng-container *ngIf="sentMessages.length > 0; else noSentMessages">
             <mat-list>
-              <mat-list-item *ngFor="let message of sentMessages">
+              <mat-list-item *ngFor="let message of sentMessages"
+               (click)="openMessageDialog(message, true)">
                 <mat-icon matListIcon>send</mat-icon>
                 <div matLine class="message-subject">{{message.subject}}</div>
                 <div matLine class="message-receiver">
