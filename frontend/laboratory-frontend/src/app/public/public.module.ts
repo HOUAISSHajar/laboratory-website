@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { PublicRoutingModule } from './public-routing.module';
 import { HomeComponent } from './home/home.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
-import { FormsModule } from '@angular/forms'; // Add this for ngModel
+import { FormsModule,ReactiveFormsModule } from '@angular/forms'; // Add this for ngModel
 // Material imports
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,18 +21,25 @@ import { MatSelectModule } from '@angular/material/select'; // Add this
 import { MatInputModule } from '@angular/material/input'; // Add this
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { PublicationsListComponent } from './publications/publications-list/publications-list.component';
+import { PublicationDetailComponent } from './publications/publication-detail/publication-detail.component';
+import { MatChipsModule } from '@angular/material/chips';
+
 
 @NgModule({
   declarations: [
     HomeComponent,
     PublicLayoutComponent,
     ActivitiesListComponent,
-    ActivityDetailComponent
+    ActivityDetailComponent,
+    PublicationsListComponent,
+    PublicationDetailComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     PublicRoutingModule,
+    ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -45,6 +52,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatIconModule,
     MatListModule,
     MatProgressBarModule,
+    MatChipsModule,
     CarouselModule.forRoot()
   ]
 })

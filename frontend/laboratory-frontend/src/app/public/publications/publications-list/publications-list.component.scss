@@ -1,0 +1,172 @@
+.publications-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  
+  .publications-header {
+    text-align: center;
+    margin-bottom: 40px;
+    
+    h1 {
+      font-size: 2.5rem;
+      color: #1a237e;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+  
+    .subtitle {
+      font-size: 1.2rem;
+      color: #546e7a;
+    }
+  }
+  
+  .filters-section {
+    margin-bottom: 30px;
+    
+    mat-form-field {
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 16px;
+    }
+  
+    .filter-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+  
+      mat-form-field {
+        flex: 1;
+      }
+    }
+  }
+  
+  .publications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+  }
+  
+  .publication-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+  
+    mat-card-header {
+      [mat-card-avatar] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+  
+        mat-icon {
+          color: white;
+        }
+      }
+  
+      .type-article { background: #1976d2; }
+      .type-book_chapter { background: #7b1fa2; }
+      .type-thesis { background: #388e3c; }
+      .type-conference_paper { background: #f57c00; }
+  
+      mat-card-title {
+        font-size: 1.2rem;
+        line-height: 1.4;
+        margin-bottom: 8px;
+      }
+  
+      mat-card-subtitle {
+        color: #546e7a;
+      }
+    }
+  
+    mat-card-content {
+      flex: 1;
+      padding: 16px;
+  
+      p {
+        color: #455a64;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+  
+      .authors {
+        margin: 12px 0;
+        font-size: 0.9rem;
+        color: #546e7a;
+  
+        strong {
+          color: #333;
+          margin-right: 8px;
+        }
+      }
+  
+      .keywords {
+        margin-top: 16px;
+  
+        mat-chip {
+          font-size: 0.85rem;
+          background: #e3f2fd;
+          color: #1976d2;
+        }
+      }
+    }
+  
+    mat-card-actions {
+      padding: 16px;
+      display: flex;
+      gap: 8px;
+  
+      button {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 40px 0;
+    color: #546e7a;
+  
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .publications-container {
+      padding: 20px;
+    }
+  
+    .publications-header {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  
+    .filters-section {
+      .filter-group {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  
+    .publications-grid {
+      grid-template-columns: 1fr;
+    }
+  }

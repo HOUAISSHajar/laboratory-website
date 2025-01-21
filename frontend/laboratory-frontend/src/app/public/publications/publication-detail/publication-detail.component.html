@@ -1,0 +1,57 @@
+<div class="detail-container">
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  
+    <div *ngIf="publication && !isLoading" class="publication-content">
+      <div class="publication-header">
+        <div class="type-badge" [ngClass]="publication.type">
+          {{getPublicationTypeLabel(publication.type)}}
+        </div>
+        <h1>{{publication.title}}</h1>
+        <div class="publication-meta">
+          <span class="year">{{publication.year}}</span>
+          <span class="dot">•</span>
+          <span class="journal" *ngIf="publication.journal">{{publication.journal}}</span>
+        </div>
+      </div>
+  
+      <div class="content-grid">
+        <mat-card class="main-info">
+          <mat-card-content>
+            <h2>Abstract</h2>
+            <p>{{publication.abstract}}</p>
+  
+            <div class="keywords" *ngIf="publication.keywords?.length">
+                <h2>Keywords</h2>
+                <mat-chip-set>
+                  <mat-chip *ngFor="let keyword of publication.keywords">
+                    {{keyword}}
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+          </mat-card-content>
+        </mat-card>
+  
+        <div class="side-info">
+          <mat-card class="authors-card">
+            <mat-card-content>
+              <h2>Authors</h2>
+              <mat-list>
+                <mat-list-item *ngFor="let author of publication.authors">
+                  <img matListItemAvatar [src]="author.photo || 'assets/images/default-avatar.png'" 
+                       [alt]="author.firstName">
+                  <span matListItemTitle>{{author.firstName}} {{author.lastName}}</span>
+                  <span matListItemLine>{{author.department}}</span>
+                </mat-list-item>
+              </mat-list>
+            </mat-card-content>
+          </mat-card>
+  
+          
+        </div>
+      </div>
+    </div>
+  </div>

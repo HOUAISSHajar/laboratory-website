@@ -1,0 +1,86 @@
+<div class="publications-container">
+    <div class="publications-header">
+      <h1>Scientific Publications</h1>
+      <p class="subtitle">Browse our research publications and academic contributions</p>
+    </div>
+  
+    <div class="filters-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput [formControl]="searchControl" placeholder="Search by title, author, or keyword">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+  
+      <div class="filter-group">
+        <mat-form-field appearance="outline">
+          <mat-label>Year</mat-label>
+          <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange()">
+            <mat-option *ngFor="let year of years" [value]="year">
+              {{year === 'all' ? 'All Years' : year}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="selectedType" (selectionChange)="onTypeChange()">
+            <mat-option *ngFor="let type of publicationTypes" [value]="type.value">
+              {{type.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <div class="publications-grid" *ngIf="!isLoading">
+      <mat-card *ngFor="let publication of filteredPublications" class="publication-card"
+                [routerLink]="['/publications', publication._id]">
+        <mat-card-header>
+          <div mat-card-avatar [ngClass]="'type-' + publication.type">
+            <mat-icon>{{
+              publication.type === 'article' ? 'article' :
+              publication.type === 'book_chapter' ? 'book' :
+              publication.type === 'thesis' ? 'school' : 'description'
+            }}</mat-icon>
+          </div>
+          <mat-card-title>{{publication.title}}</mat-card-title>
+          <mat-card-subtitle>
+            {{publication.year}} - {{getPublicationTypeLabel(publication.type)}}
+        </mat-card-subtitle>
+        </mat-card-header>
+  
+        <mat-card-content>
+          <p *ngIf="publication.abstract">{{publication.abstract | slice:0:200}}...</p>
+          <div class="authors">
+            <strong>Authors:</strong>
+            <span *ngFor="let author of publication.authors; let last = last">
+              {{author.firstName}} {{author.lastName}}{{!last ? ', ' : ''}}
+            </span>
+          </div>
+          <div class="keywords" *ngIf="publication.keywords?.length">
+            <mat-chip-set>
+                <mat-chip *ngFor="let keyword of publication.keywords">
+                    {{keyword}}
+                </mat-chip>
+            </mat-chip-set>
+          </div>
+        </mat-card-content>
+  
+        <mat-card-actions>
+          <button mat-button color="primary">
+            <mat-icon>visibility</mat-icon>
+            View Details
+          </button>
+          
+          
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  
+    <div class="no-results" *ngIf="!isLoading && filteredPublications.length === 0">
+      <mat-icon>search_off</mat-icon>
+      <p>No publications found matching your criteria.</p>
+    </div>
+  </div>
