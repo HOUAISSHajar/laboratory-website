@@ -1,0 +1,65 @@
+
+<div class="activities-container">
+    <div class="activities-header">
+      <h1>Laboratory Activities</h1>
+      <p class="subtitle">Discover our academic events, workshops, and research missions</p>
+    </div>
+  
+    <div class="filter-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Filter by Type</mat-label>
+        <mat-select [(ngModel)]="selectedType" (selectionChange)="onTypeChange()">
+          <mat-option *ngFor="let type of activityTypes" [value]="type.value">
+            {{type.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  
+    <div class="activities-grid">
+      <mat-card *ngFor="let activity of filteredActivities" class="activity-card" 
+                [routerLink]="['/activities', activity._id]">
+        <div class="activity-type-badge" [ngClass]="activity.type">
+          {{activity.type | titlecase}}
+        </div>
+        
+        <mat-card-header>
+          <mat-card-title>{{activity.title}}</mat-card-title>
+          <mat-card-subtitle>
+            {{activity.date | date:'longDate'}}
+          </mat-card-subtitle>
+        </mat-card-header>
+  
+        <mat-card-content>
+          <p>{{activity.description | slice:0:200}}...</p>
+          
+          <div class="activity-details">
+            <div class="detail">
+              <mat-icon>location_on</mat-icon>
+              <span>{{activity.location}}</span>
+            </div>
+            <div class="detail" *ngIf="activity.organizers?.length">
+              <mat-icon>people</mat-icon>
+              <span>{{activity.organizers.length}} Organizer(s)</span>
+            </div>
+          </div>
+        </mat-card-content>
+  
+        <mat-card-actions>
+          <button mat-stroked-button color="primary">
+            Learn More
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  
+    <div *ngIf="!isLoading && filteredActivities.length === 0" class="no-activities">
+      <mat-icon>event_busy</mat-icon>
+      <p>No activities found for the selected type.</p>
+    </div>
+  </div>

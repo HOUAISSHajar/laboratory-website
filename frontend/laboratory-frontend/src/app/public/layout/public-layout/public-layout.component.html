@@ -1,19 +1,24 @@
-
+<!-- src/app/public/layout/public-layout.component.html -->
 <div class="public-layout">
-    <mat-toolbar class="header">
+    <mat-toolbar color="primary" class="header">
       <div class="container">
         <div class="logo">
-          <img src="assets/images/logo.png" alt="Laboratory Logo">
-          <span>Laboratory Name</span>
+          <img src="assets/images/logo.png" alt="Laboratory Logo" class="logo-img">
+          <span>Laboratory Website</span>
         </div>
-        
+  
         <nav class="navigation">
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-          <a routerLink="/about">About</a>
-          <a routerLink="/research">Research</a>
-          <a routerLink="/members">Members</a>
-          <a routerLink="/contact">Contact</a>
-          <button mat-raised-button color="accent" (click)="navigateToLogin()">
+          <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <mat-icon>home</mat-icon>
+            Home
+          </a>
+          <a mat-button routerLink="/activities" routerLinkActive="active">
+            <mat-icon>event</mat-icon>
+            Activities
+          </a>
+          <!-- Add other public navigation links here -->
+          <button mat-raised-button color="accent" routerLink="/login">
+            <mat-icon>login</mat-icon>
             Login
           </button>
         </nav>
@@ -26,7 +31,7 @@
   
     <footer>
       <div class="container">
-        <p>&copy; 2024 Laboratory Name. All rights reserved.</p>
+        <p>&copy; 2024 Laboratory Website. All rights reserved.</p>
       </div>
     </footer>
   </div>

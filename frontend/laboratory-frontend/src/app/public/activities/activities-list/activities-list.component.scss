@@ -1,0 +1,178 @@
+
+.activities-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  
+  .activities-header {
+    text-align: center;
+    margin-bottom: 40px;
+    
+    h1 {
+      font-size: 2.5rem;
+      color: #1a237e;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+  
+    .subtitle {
+      font-size: 1.2rem;
+      color: #546e7a;
+    }
+  }
+  
+  .filter-section {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+  
+    mat-form-field {
+      width: 300px;
+    }
+  }
+  
+  .activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+  }
+  
+  .activity-card {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+  
+    .activity-type-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+  
+      &.conference {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+  
+      &.seminar {
+        background-color: #f3e5f5;
+        color: #9c27b0;
+      }
+  
+      &.workshop {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+  
+      &.training {
+        background-color: #fff3e0;
+        color: #f57c00;
+      }
+  
+      &.research_mission {
+        background-color: #e8eaf6;
+        color: #3f51b5;
+      }
+    }
+  
+    mat-card-header {
+      padding: 16px;
+  
+      mat-card-title {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+        color: #1a237e;
+      }
+  
+      mat-card-subtitle {
+        color: #546e7a;
+      }
+    }
+  
+    mat-card-content {
+      padding: 0 16px;
+  
+      p {
+        color: #455a64;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+  
+      .activity-details {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 16px;
+  
+        .detail {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #546e7a;
+  
+          mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+  
+    mat-card-actions {
+      padding: 16px;
+      display: flex;
+      justify-content: flex-end;
+  
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+  
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+  }
+  
+  .no-activities {
+    text-align: center;
+    padding: 40px 0;
+    color: #546e7a;
+  
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .activities-container {
+      padding: 20px;
+    }
+  
+    .activities-header {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  
+    .activities-grid {
+      grid-template-columns: 1fr;
+    }
+  }

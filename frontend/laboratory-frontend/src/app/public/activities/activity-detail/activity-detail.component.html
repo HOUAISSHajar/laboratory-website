@@ -1,0 +1,76 @@
+
+<div class="detail-container">
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <div *ngIf="error" class="error-message">
+      <mat-icon>error</mat-icon>
+      <p>{{error}}</p>
+    </div>
+  
+    <div *ngIf="activity && !isLoading" class="activity-content">
+      <button mat-icon-button class="back-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+  
+      <div class="activity-header">
+        <div class="type-badge" [ngClass]="activity.type">
+          {{getActivityTypeLabel(activity.type)}}
+        </div>
+        <h1>{{activity.title}}</h1>
+        <div class="activity-meta">
+          <div class="meta-item">
+            <mat-icon>event</mat-icon>
+            <span>{{activity.date | date:'fullDate'}}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>location_on</mat-icon>
+            <span>{{activity.location}}</span>
+          </div>
+        </div>
+      </div>
+  
+      <mat-card class="description-card">
+        <mat-card-content>
+          <h2>About This Activity</h2>
+          <p>{{activity.description}}</p>
+        </mat-card-content>
+      </mat-card>
+  
+      <div class="details-grid">
+        <mat-card class="organizers-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>people</mat-icon>
+              Organizers
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item *ngFor="let organizer of activity.organizers">
+                <img matListItemAvatar [src]="organizer.photo || 'assets/images/default-avatar.png'" [alt]="organizer.firstName">
+                <span matListItemTitle>{{organizer.firstName}} {{organizer.lastName}}</span>
+                <span matListItemLine>{{organizer.department}}</span>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+  
+        <mat-card class="participants-card" *ngIf="activity.participants?.length">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>groups</mat-icon>
+              Participants
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="participant-count">
+              <span class="number">{{activity.participants.length}}</span>
+              <span class="text">Registered Participants</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+  
+      
+    </div>
+  </div>
