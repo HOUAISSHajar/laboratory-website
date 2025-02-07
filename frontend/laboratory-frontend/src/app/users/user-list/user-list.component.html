@@ -1,6 +1,10 @@
 <div class="users-container">
     <div class="header">
       <h1>Users Management</h1>
+      <button mat-raised-button color="primary" (click)="createNew()">
+        <mat-icon>add</mat-icon>
+        New User
+      </button>
     </div>
   
     <mat-card>
@@ -38,13 +42,17 @@
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                <button mat-menu-item>
+                <button mat-menu-item (click)="viewUser(user._id)">
                   <mat-icon>visibility</mat-icon>
                   <span>View</span>
                 </button>
-                <button mat-menu-item>
+                <button mat-menu-item (click)="editUser(user._id)">
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteUser(user._id)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
                 </button>
               </mat-menu>
             </td>

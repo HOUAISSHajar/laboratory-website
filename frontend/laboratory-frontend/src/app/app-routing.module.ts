@@ -66,12 +66,12 @@ import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'index',
     loadChildren: () => import('./public/public.module').then(m => m.PublicModule)
   },
   { path: 'login', component: LoginComponent },
   {
-    path: 'admin',
+    path: '',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [
@@ -103,7 +103,8 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
      
     ]
-  }
+  },
+  { path: '**', redirectTo: 'index' }
 ];
 
 @NgModule({

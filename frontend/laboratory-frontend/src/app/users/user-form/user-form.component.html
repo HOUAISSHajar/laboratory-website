@@ -1,0 +1,69 @@
+<div class="user-form-container">
+    <h1>{{isEditing ? 'Edit User' : 'Create New User'}}</h1>
+  
+    <mat-card>
+      <mat-card-content>
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+          <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+          <div class="image-upload">
+            <img [src]="imagePreview || 'assets/default-avatar.png'" alt="User photo">
+            <button type="button" mat-raised-button (click)="fileInput.click()">
+              <mat-icon>upload</mat-icon>
+              Upload Photo
+            </button>
+            <input #fileInput type="file" (change)="onImagePicked($event)" style="display: none">
+          </div>
+  
+          <div class="form-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" required>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" required>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" required>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" formControlName="password" [required]="!isEditing">
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="role" required>
+                <mat-option value="administrator">Administrator</mat-option>
+                <mat-option value="faculty_researcher">Faculty Researcher</mat-option>
+                <mat-option value="phd_researcher">PhD Researcher</mat-option>
+                <mat-option value="associated_member">Associated Member</mat-option>
+              </mat-select>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Department</mat-label>
+              <input matInput formControlName="department">
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="4"></textarea>
+            </mat-form-field>
+          </div>
+  
+          <div class="form-actions">
+            <button mat-button type="button" routerLink="/users">Cancel</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="userForm.invalid || isLoading">
+              {{isEditing ? 'Update' : 'Create'}} User
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>

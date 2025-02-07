@@ -1,0 +1,66 @@
+<div class="user-detail-container">
+    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+    <div *ngIf="user" class="user-content">
+      <div class="header">
+        <div class="title-section">
+          <h1>{{user.firstName}} {{user.lastName}}</h1>
+          <mat-chip-set>
+            <mat-chip color="primary" selected>
+              {{user.role | titlecase}}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+        
+        <button mat-raised-button color="primary" routerLink="/users">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Users
+        </button>
+      </div>
+  
+      <div class="info-grid">
+        <mat-card class="profile-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>account_circle</mat-icon>
+            <mat-card-title>Profile Information</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="profile-image">
+              <ng-container *ngIf="user.photo; else defaultAvatar">
+                <img [src]="getPhotoUrl()" [alt]="user.firstName + ' ' + user.lastName">
+              </ng-container>
+              <ng-template #defaultAvatar>
+                <mat-icon class="default-avatar">account_circle</mat-icon>
+              </ng-template>
+            </div>
+            <div class="profile-details">
+              <p><strong>Email:</strong> {{user.email}}</p>
+              <p><strong>Department:</strong> {{user.department || 'Not specified'}}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+  
+        <mat-card class="description-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>description</mat-icon>
+            <mat-card-title>Description</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{user.description || 'No description available'}}</p>
+          </mat-card-content>
+        </mat-card>
+  
+        <mat-card class="activity-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>trending_up</mat-icon>
+            <mat-card-title>Recent Activity</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="activity-info">
+              <p><strong>Member Since:</strong> {{user.createdAt | date:'mediumDate'}}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>

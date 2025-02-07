@@ -36,7 +36,7 @@
   
     <div class="publications-grid" *ngIf="!isLoading">
       <mat-card *ngFor="let publication of filteredPublications" class="publication-card"
-                [routerLink]="['/publications', publication._id]">
+                [routerLink]="['/index/publications', publication._id]">
         <mat-card-header>
           <div mat-card-avatar [ngClass]="'type-' + publication.type">
             <mat-icon>{{

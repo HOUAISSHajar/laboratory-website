@@ -15,9 +15,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { UserFormComponent } from './user-form/user-form.component';
+import { UserDetailComponent } from './user-detail/user-detail.component';
 @NgModule({
   declarations: [
-    UserListComponent
+    UserListComponent,
+    UserFormComponent,
+    UserDetailComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +37,8 @@ import { MatInputModule } from '@angular/material/input';
     MatProgressBarModule,
     MatSnackBarModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule
   ]
 })
 export class UsersModule { }

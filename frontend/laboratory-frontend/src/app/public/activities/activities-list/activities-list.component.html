@@ -18,7 +18,7 @@
   
     <div class="activities-grid">
       <mat-card *ngFor="let activity of filteredActivities" class="activity-card" 
-                [routerLink]="['/activities', activity._id]">
+                [routerLink]="['/index/activities', activity._id]">
         <div class="activity-type-badge" [ngClass]="activity.type">
           {{activity.type | titlecase}}
         </div>
