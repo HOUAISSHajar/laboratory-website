@@ -22,6 +22,18 @@
           </mat-error>
         </mat-form-field>
 
+        <mat-form-field appearance="outline">
+          <mat-label>Members Involved</mat-label>
+          <mat-select formControlName="members" multiple required>
+            <mat-option *ngFor="let user of availableUsers" [value]="user._id">
+              {{user.firstName}} {{user.lastName}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="projectForm.get('members')?.hasError('required')">
+            At least one member is required
+          </mat-error>
+        </mat-form-field>
+
         <div class="date-fields">
           <mat-form-field appearance="outline">
             <mat-label>Start Date</mat-label>

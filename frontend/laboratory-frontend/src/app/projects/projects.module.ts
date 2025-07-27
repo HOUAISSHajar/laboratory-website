@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
@@ -21,7 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field'; // Add this
 import { MatInputModule } from '@angular/material/input'; // Add this
 import { MatListModule } from '@angular/material/list';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 @NgModule({
   declarations: [
     ProjectListComponent,
@@ -31,6 +31,7 @@ import { MatListModule } from '@angular/material/list';
   imports: [
     CommonModule,
     ProjectsRoutingModule,
+     FormsModule,
     ReactiveFormsModule,
     MatTableModule,
     MatCardModule,
@@ -45,7 +46,8 @@ import { MatListModule } from '@angular/material/list';
     MatSelectModule,
     MatFormFieldModule,  
     MatInputModule,
-    MatListModule
+    MatListModule,
+     MatTooltipModule
   ]
 })
 export class ProjectsModule { }

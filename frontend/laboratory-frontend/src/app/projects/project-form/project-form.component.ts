@@ -1,14 +1,14 @@
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../../core/services/project.service';
+import { UserService } from '../../core/services/user.service';
+import { AuthService } from '../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-project-form',
   standalone: false,
-  
   templateUrl: './project-form.component.html',
   styleUrl: './project-form.component.scss'
 })
@@ -17,10 +17,14 @@ export class ProjectFormComponent implements OnInit {
   isEditing = false;
   projectId: string | null = null;
   isLoading = false;
+  availableUsers: any[] = [];
+  currentUserId: string = '';
 
   constructor(
     private fb: FormBuilder,
     private projectService: ProjectService,
+    private userService: UserService,
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
@@ -28,20 +32,40 @@ export class ProjectFormComponent implements OnInit {
     this.projectForm = this.fb.group({
       title: ['', Validators.required],
       summary: ['', Validators.required],
+      members: [[], Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       status: ['ongoing', Validators.required],
-      expectedResults: [''],
-      members: [[]] // You might want to add a member selector component
+      expectedResults: ['']
     });
   }
 
   ngOnInit() {
+    // Get current user ID
+    const currentUser = this.authService.getCurrentUser();
+    this.currentUserId = currentUser?.id || '';
+    
+    this.loadUsers();
     this.projectId = this.route.snapshot.paramMap.get('id');
     if (this.projectId) {
       this.isEditing = true;
       this.loadProject(this.projectId);
     }
+  }
+
+  loadUsers() {
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        // Filter users: exclude administrators, associated_members, and current user
+        this.availableUsers = users.filter((user: any) => 
+          ['faculty_researcher', 'phd_researcher'].includes(user.role) && 
+          user._id !== this.currentUserId
+        );
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+      }
+    });
   }
 
   loadProject(id: string) {
@@ -51,11 +75,11 @@ export class ProjectFormComponent implements OnInit {
         this.projectForm.patchValue({
           title: project.title,
           summary: project.summary,
+          members: project.members.map((member: any) => member._id),
           startDate: project.startDate,
           endDate: project.endDate,
           status: project.status,
-          expectedResults: project.expectedResults,
-          members: project.members
+          expectedResults: project.expectedResults
         });
         this.isLoading = false;
       },

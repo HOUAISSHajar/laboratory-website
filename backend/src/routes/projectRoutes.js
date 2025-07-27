@@ -2,12 +2,24 @@ const express = require('express');
 const router = express.Router();
 const projectController = require('../controllers/projectController');
 const { auth, authorize } = require('../middleware/auth');
+const uploadDocument = require('../middleware/documentUpload');
 
 // Apply auth middleware to all routes
 router.use(auth);
 
 // Get all projects - accessible by all authenticated users
 router.get('/', projectController.getAllProjects);
+
+// Upload document to project
+router.post('/:id/documents', 
+    uploadDocument.single('document'), 
+    projectController.uploadDocument
+);
+
+// Delete document
+router.delete('/:projectId/documents/:documentId', 
+    projectController.deleteDocument
+);
 
 // Get project by ID - accessible by all authenticated users
 router.get('/:id', projectController.getProjectById);

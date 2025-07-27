@@ -36,4 +36,24 @@ export class ProjectService {
   deleteProject(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  // Upload document to project
+  uploadDocument(projectId: string, formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${projectId}/documents`, formData).pipe(
+      catchError(error => {
+        console.error('Error uploading document:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Delete document
+  deleteDocument(projectId: string, documentId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${projectId}/documents/${documentId}`).pipe(
+      catchError(error => {
+        console.error('Error deleting document:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }
