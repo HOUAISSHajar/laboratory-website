@@ -21,3 +21,5 @@ npm-debug.log*
 
 # System Files
 .DS_Store
+# Uploads
+uploads/

@@ -1,1 +1,82 @@
-<p>publication-detail works!</p>
+<div class="publication-detail-container">
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div *ngIf="publication" class="publication-content">
+    <div class="header">
+      <div class="title-section">
+        <h1>{{publication.title}}</h1>
+        <mat-chip-set>
+          <mat-chip color="accent" selected>
+            {{getTypeDisplayName(publication.type)}}
+          </mat-chip>
+          <mat-chip color="primary" selected>
+            {{publication.year}}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+      
+      <button mat-raised-button color="primary" routerLink="/publications">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Publications
+      </button>
+    </div>
+
+    <div class="info-grid">
+      <mat-card class="authors-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>people</mat-icon>
+          <mat-card-title>Authors</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-chip-set>
+            <mat-chip *ngFor="let author of publication.authors" class="author-chip">
+              <mat-icon>person</mat-icon>
+              {{author.firstName}} {{author.lastName}}
+            </mat-chip>
+          </mat-chip-set>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="publication-info-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>info</mat-icon>
+          <mat-card-title>Publication Info</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-item">
+            <strong>Type:</strong>
+            <span>{{getTypeDisplayName(publication.type)}}</span>
+          </div>
+          <div class="info-item">
+            <strong>Year:</strong>
+            <span>{{publication.year}}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="keywords-card" *ngIf="publication.keywords && publication.keywords.length > 0">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>label</mat-icon>
+          <mat-card-title>Keywords</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-chip-set>
+            <mat-chip *ngFor="let keyword of publication.keywords" class="keyword-chip">
+              {{keyword}}
+            </mat-chip>
+          </mat-chip-set>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card class="abstract-card" *ngIf="publication.abstract">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>article</mat-icon>
+        <mat-card-title>Abstract</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{publication.abstract}}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,26 +1,60 @@
-.form-container {
-    padding: 20px;
-  
-    mat-card {
-      max-width: 800px;
-      margin: 0 auto;
-  
-      form {
+.publication-form-container {
+  padding: 20px;
+
+  mat-card {
+    margin-top: 20px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+
+      mat-form-field {
+        flex: 1;
+      }
+    }
+
+    .keywords-section {
+      .keywords-header {
         display: flex;
-        flex-direction: column;
-        gap: 16px;
-        padding: 20px 0;
-  
-        mat-form-field {
-          width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+
+        h3 {
+          margin: 0;
+          color: #333;
         }
-  
-        .form-actions {
+      }
+
+      .keywords-list {
+        .keyword-item {
           display: flex;
-          justify-content: flex-end;
+          align-items: center;
           gap: 8px;
-          margin-top: 16px;
+          margin-bottom: 8px;
+
+          mat-form-field {
+            flex: 1;
+          }
+
+          button {
+            margin-top: 8px;
+          }
         }
       }
     }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+    }
   }
+}

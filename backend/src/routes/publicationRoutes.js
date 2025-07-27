@@ -3,13 +3,14 @@ const router = express.Router();
 const publicationController = require('../controllers/publicationController');
 const { auth, authorize } = require('../middleware/auth');
 
-//  new route for user-specific publications
+// User-specific publications route - requires authentication
 router.get('/user', auth, publicationController.getUserPublications);
-// Get all publications - public access
-router.get('/', publicationController.getAllPublications);
 
 // Search publications - public access
 router.get('/search', publicationController.searchPublications);
+
+// Get all publications - requires authentication for role-based filtering
+router.get('/', auth, publicationController.getAllPublications);
 
 // Get publication by ID - public access
 router.get('/:id', publicationController.getPublicationById);

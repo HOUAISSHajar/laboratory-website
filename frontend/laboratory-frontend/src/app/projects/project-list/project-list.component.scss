@@ -20,4 +20,23 @@
         cursor: pointer;
       }
     }
+
+    .no-data {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      color: #ccc;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 0;
+    }
+  }
   }

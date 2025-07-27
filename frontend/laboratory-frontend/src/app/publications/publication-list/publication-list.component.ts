@@ -1,15 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-publication-list',
-//   standalone: false,
-  
-//   templateUrl: './publication-list.component.html',
-//   styleUrl: './publication-list.component.scss'
-// })
-// export class PublicationListComponent {
-
-// }
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PublicationService } from '../../core/services/publication.service';
@@ -19,7 +7,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-publication-list',
   standalone: false,
-  
   templateUrl: './publication-list.component.html',
   styleUrl: './publication-list.component.scss'
 })
@@ -29,7 +16,8 @@ export class PublicationListComponent implements OnInit {
   isLoading = true;
   canCreatePublication = false;
   displayedColumns: string[] = ['title', 'type', 'year', 'authors', 'actions'];
-
+  pageTitle: string = '';
+  
   constructor(
     private publicationService: PublicationService,
     private authService: AuthService,
@@ -41,15 +29,18 @@ export class PublicationListComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
     this.userRole = currentUser?.role || '';
     this.canCreatePublication = ['administrator', 'faculty_researcher', 'phd_researcher'].includes(this.userRole);
+    
+    // Set title based on role
+    if (['faculty_researcher', 'phd_researcher'].includes(this.userRole)) {
+      this.pageTitle = 'My Publications';
+    } else {
+      this.pageTitle = 'All Publications';
+    }
+    
     this.loadPublications();
-}
+  }
 
-loadPublications() {
-  this.isLoading = true;
-  
-  // Check user role and load appropriate publications
-  if (this.userRole === 'administrator' || this.userRole === 'associated_member') {
-    // Administrators and associated members can see all publications
+  loadPublications() {
     this.publicationService.getAllPublications().subscribe({
       next: (data) => {
         this.publications = data;
@@ -60,20 +51,7 @@ loadPublications() {
         this.isLoading = false;
       }
     });
-  } else if (['faculty_researcher', 'phd_researcher'].includes(this.userRole)) {
-    // Researchers can only see their own publications
-    this.publicationService.getUserPublications().subscribe({
-      next: (data) => {
-        this.publications = data;
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.snackBar.open('Error loading publications', 'Close', { duration: 3000 });
-        this.isLoading = false;
-      }
-    });
   }
-}
 
   createNew() {
     this.router.navigate(['/publications/new']);
@@ -99,5 +77,15 @@ loadPublications() {
         }
       });
     }
+  }
+
+  getTypeDisplayName(type: string): string {
+    const typeMap: { [key: string]: string } = {
+      'article': 'Article',
+      'book_chapter': 'Book Chapter',
+      'thesis': 'Thesis',
+      'conference_paper': 'Conference Paper'
+    };
+    return typeMap[type] || type;
   }
 }

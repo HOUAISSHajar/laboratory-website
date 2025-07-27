@@ -19,19 +19,29 @@ const publicationController = {
         }
     },
 
-    // Get all publications with optional filters
+    // Get all publications with role-based filtering
     getAllPublications: async (req, res) => {
         try {
             const { year, type } = req.query;
+            const { userId, role } = req.user || {};
             let query = {};
             
             // Apply filters if provided
             if (year) query.year = year;
             if (type) query.type = type;
             
+            // Role-based filtering
+            if (role === 'administrator' || role === 'associated_member') {
+                // Admin and associated members see all publications
+                // No additional filtering needed
+            } else if (role === 'faculty_researcher' || role === 'phd_researcher') {
+                // Faculty and PhD researchers see only their publications
+                query.authors = userId;
+            }
+            
             const publications = await Publication.find(query)
                 .populate('authors', 'firstName lastName email')
-                .sort({ year: -1, createdAt: -1 }); // Sort by year descending
+                .sort({ year: -1, createdAt: -1 });
             
             res.json(publications);
         } catch (error) {
@@ -125,22 +135,30 @@ const publicationController = {
             res.status(500).json({ message: error.message });
         }
     },
-     // Add this new method
-  getUserPublications: async (req, res) => {
-    try {
-      const userId = req.user.userId;
-      
-      const publications = await Publication.find({
-        authors: userId
-      })
-      .populate('authors', 'firstName lastName email')
-      .sort({ year: -1, createdAt: -1 });
-      
-      res.json(publications);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+     
+    // Get user publications with role-based filtering
+    getUserPublications: async (req, res) => {
+        try {
+            const { userId, role } = req.user;
+            let query = {};
+            
+            if (role === 'administrator' || role === 'associated_member') {
+                // Admin and associated members see all publications
+                // No filtering needed
+            } else {
+                // Faculty and PhD researchers see only their publications
+                query.authors = userId;
+            }
+            
+            const publications = await Publication.find(query)
+                .populate('authors', 'firstName lastName email')
+                .sort({ year: -1, createdAt: -1 });
+            
+            res.json(publications);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
-  }
 };
 
 module.exports = publicationController;

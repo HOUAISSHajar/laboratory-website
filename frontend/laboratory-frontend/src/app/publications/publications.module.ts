@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PublicationsRoutingModule } from './publications-routing.module';
+
+// Components
 import { PublicationListComponent } from './publication-list/publication-list.component';
 import { PublicationDetailComponent } from './publication-detail/publication-detail.component';
 import { PublicationFormComponent } from './publication-form/publication-form.component';
-// Material Imports
+
+// Angular Material Imports
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,11 +17,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+
 @NgModule({
   declarations: [
     PublicationListComponent,
@@ -29,7 +32,6 @@ import { MatDividerModule } from '@angular/material/divider';
     CommonModule,
     PublicationsRoutingModule,
     ReactiveFormsModule,
-    // Material Modules
     MatTableModule,
     MatCardModule,
     MatButtonModule,
@@ -41,7 +43,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatDividerModule
+    MatListModule
   ]
 })
 export class PublicationsModule { }

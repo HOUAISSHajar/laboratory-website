@@ -81,6 +81,13 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+
+
+        <!-- Message "No projects found" ajouté ici -->
+        <div *ngIf="projects.length === 0 && !isLoading" class="no-data">
+  <mat-icon>work</mat-icon>
+  <p>No projects found</p>
+</div>
       </mat-card-content>
     </mat-card>
   </div>

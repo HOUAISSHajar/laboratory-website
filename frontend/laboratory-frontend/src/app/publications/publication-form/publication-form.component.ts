@@ -1,28 +1,24 @@
-// @Component({
-//   selector: 'app-publication-form',
-//   standalone: false,
-  
-//   templateUrl: './publication-form.component.html',
-//   styleUrl: './publication-form.component.scss'
-// })
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PublicationService } from '../../core/services/publication.service';
+import { UserService } from '../../core/services/user.service';
+import { AuthService } from '../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-publication-form',
   standalone: false,
-  
   templateUrl: './publication-form.component.html',
   styleUrl: './publication-form.component.scss'
 })
 export class PublicationFormComponent implements OnInit {
   publicationForm: FormGroup;
-  isLoading = false;
   isEditing = false;
   publicationId: string | null = null;
+  isLoading = false;
+  availableUsers: any[] = [];
+  currentUserId: string = '';
 
   publicationTypes = [
     { value: 'article', label: 'Article' },
@@ -34,39 +30,75 @@ export class PublicationFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private publicationService: PublicationService,
-    public router: Router,
+    private userService: UserService,
+    private authService: AuthService,
+    private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) {
     this.publicationForm = this.fb.group({
-      title: ['', [Validators.required]],
-      type: ['', [Validators.required]],
-      year: ['', [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]],
-      journal: [''],
-      doi: [''],
+      title: ['', Validators.required],
+      type: ['', Validators.required],
+      year: ['', [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear() + 5)]],
       abstract: [''],
-      keywords: ['']
+      keywords: this.fb.array([]),
+      authors: [[], Validators.required]
     });
   }
 
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.isEditing = true;
-        this.publicationId = params['id'];
-        this.loadPublication(params['id']);
+  ngOnInit() {
+    // Get current user ID
+    const currentUser = this.authService.getCurrentUser();
+    this.currentUserId = currentUser?.id || '';
+    
+    this.loadUsers();
+    this.publicationId = this.route.snapshot.paramMap.get('id');
+    if (this.publicationId) {
+      this.isEditing = true;
+      this.loadPublication(this.publicationId);
+    }
+  }
+
+  get keywords(): FormArray {
+    return this.publicationForm.get('keywords') as FormArray;
+  }
+
+  loadUsers() {
+    this.userService.getAllUsers().subscribe({
+      next: (users) => {
+        // Filter users: exclude administrators, associated_members, and current user
+        this.availableUsers = users.filter((user: any) => 
+          ['faculty_researcher', 'phd_researcher'].includes(user.role) && 
+          user._id !== this.currentUserId
+        );
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
       }
     });
   }
 
-  loadPublication(id: string): void {
+  loadPublication(id: string) {
     this.isLoading = true;
     this.publicationService.getPublicationById(id).subscribe({
       next: (publication) => {
         this.publicationForm.patchValue({
-          ...publication,
-          keywords: publication.keywords?.join(', ')
+          title: publication.title,
+          type: publication.type,
+          year: publication.year,
+          abstract: publication.abstract,
+          authors: publication.authors.map((author: any) => author._id)
         });
+
+        // Load keywords
+        const keywordsArray = this.keywords;
+        keywordsArray.clear();
+        if (publication.keywords) {
+          publication.keywords.forEach((keyword: string) => {
+            keywordsArray.push(this.fb.control(keyword));
+          });
+        }
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -76,38 +108,38 @@ export class PublicationFormComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  addKeyword() {
+    this.keywords.push(this.fb.control(''));
+  }
+
+  removeKeyword(index: number) {
+    this.keywords.removeAt(index);
+  }
+
+  onSubmit() {
     if (this.publicationForm.valid) {
       this.isLoading = true;
-      const formData = this.publicationForm.value;
-      
-      // Convert keywords string to array
-      const keywords = formData.keywords
-        ? formData.keywords.split(',').map((k: string) => k.trim()).filter((k: string) => k)
-        : [];
-
       const publicationData = {
-        ...formData,
-        keywords,
-        authors: [] 
+        ...this.publicationForm.value,
+        keywords: this.keywords.value.filter((keyword: string) => keyword.trim() !== '')
       };
 
-      const request$ = this.isEditing
+      const request = this.isEditing
         ? this.publicationService.updatePublication(this.publicationId!, publicationData)
         : this.publicationService.createPublication(publicationData);
 
-      request$.subscribe({
+      request.subscribe({
         next: () => {
           this.snackBar.open(
-            `Publication ${this.isEditing ? 'updated' : 'created'} successfully`, 
-            'Close', 
+            `Publication ${this.isEditing ? 'updated' : 'created'} successfully`,
+            'Close',
             { duration: 3000 }
           );
           this.router.navigate(['/publications']);
         },
         error: (error) => {
           this.snackBar.open(
-            error.error?.message || `Error ${this.isEditing ? 'updating' : 'creating'} publication`,
+            `Error ${this.isEditing ? 'updating' : 'creating'} publication`,
             'Close',
             { duration: 3000 }
           );
