@@ -78,6 +78,7 @@ export class ActivityFormComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading users:', error);
+        this.snackBar.open('Error loading users', 'Close', { duration: 3000 });
       }
     });
   }
@@ -104,6 +105,7 @@ export class ActivityFormComponent implements OnInit {
       error: (error) => {
         this.snackBar.open('Error loading activity', 'Close', { duration: 3000 });
         this.isLoading = false;
+        this.router.navigate(['/activities']);
       }
     });
   }
@@ -138,6 +140,72 @@ export class ActivityFormComponent implements OnInit {
           this.isLoading = false;
         }
       });
+    } else {
+      // Mark all fields as touched to show validation errors
+      this.markFormGroupTouched(this.activityForm);
+      this.snackBar.open('Please fill in all required fields correctly', 'Close', { duration: 3000 });
     }
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      control?.markAsTouched();
+
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
+  // Helper methods for template
+  getTypeIcon(type: string): string {
+    const iconMap: { [key: string]: string } = {
+      'conference': 'campaign',
+      'seminar': 'school',
+      'workshop': 'build',
+      'training': 'fitness_center',
+      'research_mission': 'explore'
+    };
+    return iconMap[type] || 'event';
+  }
+
+  getUserInitials(user: any): string {
+    if (!user.firstName || !user.lastName) return 'U';
+    return (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase();
+  }
+
+  getRoleDisplayName(role: string): string {
+    const roleMap: { [key: string]: string } = {
+      'administrator': 'Administrator',
+      'faculty_researcher': 'Faculty Researcher',
+      'phd_researcher': 'PhD Researcher',
+      'associated_member': 'Associated Member'
+    };
+    return roleMap[role] || role;
+  }
+
+  getSelectedOrganizers(): any[] {
+    const selectedIds = this.activityForm.get('organizers')?.value || [];
+    return this.availableOrganizers.filter(user => selectedIds.includes(user._id));
+  }
+
+  getSelectedParticipants(): any[] {
+    const selectedIds = this.activityForm.get('participants')?.value || [];
+    return this.availableParticipants.filter(user => selectedIds.includes(user._id));
+  }
+
+  // Form validation helpers
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.activityForm.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched));
+  }
+
+  getFieldError(fieldName: string): string {
+    const field = this.activityForm.get(fieldName);
+    if (field && field.errors) {
+      if (field.errors['required']) return `${fieldName} is required`;
+    }
+    return '';
   }
 }

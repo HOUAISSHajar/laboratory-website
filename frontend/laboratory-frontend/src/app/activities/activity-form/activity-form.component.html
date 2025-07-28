@@ -1,84 +1,206 @@
-<div class="activity-form-container">
-  <h1>{{isEditing ? 'Edit Activity' : 'Create New Activity'}}</h1>
+<div class="activity-form-wrapper">
+  <div class="activity-form-container">
+    <!-- Header Section -->
+    <div class="form-header">
+      <div class="header-content">
+        <div class="back-section">
+          <button mat-icon-button class="back-btn" routerLink="/activities">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <div class="title-section">
+            <div class="form-icon">
+              <mat-icon>{{isEditing ? 'edit' : 'add'}}</mat-icon>
+            </div>
+            <div class="title-text">
+              <h1>{{isEditing ? 'Edit Activity' : 'Create New Activity'}}</h1>
+              <p class="subtitle">{{isEditing ? 'Update activity details' : 'Add a new laboratory activity'}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <mat-card>
-    <mat-card-content>
+    <!-- Form Content -->
+    <div class="form-content">
       <form [formGroup]="activityForm" (ngSubmit)="onSubmit()">
-        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+        <!-- Loading Bar -->
+        <mat-progress-bar *ngIf="isLoading" mode="indeterminate" class="form-progress"></mat-progress-bar>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Title</mat-label>
-          <input matInput formControlName="title" required>
-          <mat-error *ngIf="activityForm.get('title')?.hasError('required')">
-            Title is required
-          </mat-error>
-        </mat-form-field>
+        <div class="form-grid">
+          <!-- Main Information Card -->
+          <div class="form-card main-info-card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title-icon">
+                  <mat-icon>info</mat-icon>
+                </div>
+                <h3>Activity Information</h3>
+              </div>
+            </div>
+            
+            <div class="card-content">
+              <!-- Title Field -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Activity Title</mat-label>
+                <input matInput formControlName="title" placeholder="Enter the full title of your activity" required>
+                <mat-hint>Provide a clear and descriptive title</mat-hint>
+                <mat-error *ngIf="activityForm.get('title')?.hasError('required')">
+                  Title is required
+                </mat-error>
+              </mat-form-field>
 
-        <div class="form-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Type</mat-label>
-            <mat-select formControlName="type" required>
-              <mat-option *ngFor="let type of activityTypes" [value]="type.value">
-                {{type.label}}
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="activityForm.get('type')?.hasError('required')">
-              Type is required
-            </mat-error>
-          </mat-form-field>
+              <!-- Type and Date Row -->
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Activity Type</mat-label>
+                  <mat-select formControlName="type" required>
+                    <mat-option *ngFor="let type of activityTypes" [value]="type.value">
+                      <div class="option-content">
+                        <mat-icon>{{getTypeIcon(type.value)}}</mat-icon>
+                        <span>{{type.label}}</span>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="activityForm.get('type')?.hasError('required')">
+                    Type is required
+                  </mat-error>
+                </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Date & Time</mat-label>
-            <input matInput type="datetime-local" formControlName="date" required>
-            <mat-error *ngIf="activityForm.get('date')?.hasError('required')">
-              Date is required
-            </mat-error>
-          </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Date & Time</mat-label>
+                  <input matInput type="datetime-local" formControlName="date" required>
+                  <mat-hint>Select date and time for the activity</mat-hint>
+                  <mat-error *ngIf="activityForm.get('date')?.hasError('required')">
+                    Date is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <!-- Location Field -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Location</mat-label>
+                <input matInput formControlName="location" placeholder="Enter the venue or location" required>
+                <mat-icon matSuffix>place</mat-icon>
+                <mat-hint>Specify where the activity will take place</mat-hint>
+                <mat-error *ngIf="activityForm.get('location')?.hasError('required')">
+                  Location is required
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Description Field -->
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description" rows="6" 
+                          placeholder="Provide a detailed description of the activity..." required></textarea>
+                <mat-hint>Describe the purpose, agenda, and objectives</mat-hint>
+                <mat-error *ngIf="activityForm.get('description')?.hasError('required')">
+                  Description is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Organizers Card -->
+          <div class="form-card organizers-card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title-icon">
+                  <mat-icon>people</mat-icon>
+                </div>
+                <h3>Organizers</h3>
+              </div>
+            </div>
+            
+            <div class="card-content">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Select Organizers</mat-label>
+                <mat-select formControlName="organizers" multiple>
+                  <mat-option *ngFor="let user of availableOrganizers" [value]="user._id">
+                    <div class="organizer-option">
+                      <div class="organizer-avatar">
+                        <span class="organizer-name">{{user.firstName}} {{user.lastName}}</span>
+                      </div>
+                      
+                    </div>
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Select additional organizers (you will be added automatically)</mat-hint>
+              </mat-form-field>
+
+              <!-- Selected Organizers Display -->
+              <div class="selected-organizers" *ngIf="getSelectedOrganizers().length > 0">
+                <div class="selected-label">Selected Organizers:</div>
+                <div class="organizers-chips">
+                  <mat-chip *ngFor="let organizer of getSelectedOrganizers()" class="organizer-chip">
+                    
+                    {{organizer.firstName}} {{organizer.lastName}}
+                  </mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Participants Card -->
+          <div class="form-card participants-card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title-icon">
+                  <mat-icon>group</mat-icon>
+                </div>
+                <h3>Participants</h3>
+              </div>
+            </div>
+            
+            <div class="card-content">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Select Participants</mat-label>
+                <mat-select formControlName="participants" multiple>
+                  <mat-option *ngFor="let user of availableParticipants" [value]="user._id">
+                    <div class="participant-option">
+                      <div class="participant-avatar">
+                       <span class="participant-name">{{user.firstName}} {{user.lastName}}</span>
+                      </div>
+                     
+                    </div>
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Select participants for this activity</mat-hint>
+              </mat-form-field>
+
+              <!-- Selected Participants Display -->
+              <div class="selected-participants" *ngIf="getSelectedParticipants().length > 0">
+                <div class="selected-label">Selected Participants:</div>
+                <div class="participants-chips">
+                  <mat-chip *ngFor="let participant of getSelectedParticipants()" class="participant-chip">
+                    
+                    {{participant.firstName}} {{participant.lastName}}
+                  </mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Location</mat-label>
-          <input matInput formControlName="location" required>
-          <mat-error *ngIf="activityForm.get('location')?.hasError('required')">
-            Location is required
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" rows="4" required></textarea>
-          <mat-error *ngIf="activityForm.get('description')?.hasError('required')">
-            Description is required
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Organizers</mat-label>
-          <mat-select formControlName="organizers" multiple>
-            <mat-option *ngFor="let user of availableOrganizers" [value]="user._id">
-              {{user.firstName}} {{user.lastName}}
-            </mat-option>
-          </mat-select>
-          <mat-hint>Select additional organizers (you will be added automatically)</mat-hint>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Participants</mat-label>
-          <mat-select formControlName="participants" multiple>
-            <mat-option *ngFor="let user of availableParticipants" [value]="user._id">
-              {{user.firstName}} {{user.lastName}} 
-            </mat-option>
-          </mat-select>
-          <mat-hint>Select participants for this activity</mat-hint>
-        </mat-form-field>
-
+        <!-- Form Actions -->
         <div class="form-actions">
-          <button mat-button type="button" routerLink="/activities">Cancel</button>
-          <button mat-raised-button color="primary" type="submit" [disabled]="activityForm.invalid || isLoading">
-            {{isEditing ? 'Update' : 'Create'}} Activity
-          </button>
+          <div class="actions-left">
+            <button mat-button type="button" routerLink="/activities" class="cancel-btn">
+              <mat-icon>close</mat-icon>
+              Cancel
+            </button>
+          </div>
+          
+          <div class="actions-right">
+            <button mat-raised-button type="submit" 
+                    [disabled]="activityForm.invalid || isLoading" 
+                    class="submit-btn"
+                    [class.create-mode]="!isEditing">
+              <mat-icon>{{isEditing ? 'update' : 'add'}}</mat-icon>
+              {{isEditing ? 'Update Activity' : 'Create Activity'}}
+            </button>
+          </div>
         </div>
       </form>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

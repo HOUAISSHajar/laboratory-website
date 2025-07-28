@@ -57,4 +57,14 @@ export class ActivityDetailComponent implements OnInit {
   getStatusColor(isArchived: boolean): string {
     return isArchived ? 'warn' : 'primary';
   }
+
+  getOrganizerInitials(organizer: any): string {
+    if (!organizer.firstName || !organizer.lastName) return 'O';
+    return (organizer.firstName.charAt(0) + organizer.lastName.charAt(0)).toUpperCase();
+  }
+
+  getParticipantInitials(participant: any): string {
+    if (!participant.firstName || !participant.lastName) return 'P';
+    return (participant.firstName.charAt(0) + participant.lastName.charAt(0)).toUpperCase();
+  }
 }

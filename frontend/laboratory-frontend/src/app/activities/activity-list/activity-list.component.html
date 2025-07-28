@@ -1,118 +1,185 @@
-<div class="activities-container">
-  <div class="header">
-    <h1>{{pageTitle}}</h1>
-    
-    <button *ngIf="canCreateActivity" 
-            mat-raised-button 
-            color="primary" 
-            (click)="createNew()">
-      <mat-icon>add</mat-icon>
-      New Activity
-    </button>
-  </div>
+<div class="activities-wrapper">
+  <div class="activities-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading activities...</p>
+    </div>
 
-  <mat-card>
-    <mat-card-content>
-      <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-
-      <table mat-table [dataSource]="activities" class="activities-table">
-        <!-- Title Column -->
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef> Title </th>
-          <td mat-cell *matCellDef="let activity"> {{activity.title}} </td>
-        </ng-container>
-
-        <!-- Type Column -->
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef> Type </th>
-          <td mat-cell *matCellDef="let activity">
-            <mat-chip-set>
-              <mat-chip color="accent">
-                {{getTypeDisplayName(activity.type)}}
-              </mat-chip>
-            </mat-chip-set>
-          </td>
-        </ng-container>
-
-        <!-- Date Column -->
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let activity"> 
-            {{activity.date | date:'short'}} 
-          </td>
-        </ng-container>
-
-        <!-- Location Column -->
-        <ng-container matColumnDef="location">
-          <th mat-header-cell *matHeaderCellDef> Location </th>
-          <td mat-cell *matCellDef="let activity"> {{activity.location}} </td>
-        </ng-container>
-
-        <!-- Organizers Column -->
-        <ng-container matColumnDef="organizers">
-          <th mat-header-cell *matHeaderCellDef> Organizers </th>
-          <td mat-cell *matCellDef="let activity">
-            <mat-chip-set>
-              <mat-chip *ngFor="let organizer of activity.organizers">
-                {{organizer.firstName}} {{organizer.lastName}}
-              </mat-chip>
-            </mat-chip-set>
-          </td>
-        </ng-container>
-
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef> Status </th>
-          <td mat-cell *matCellDef="let activity">
-            <mat-chip-set>
-              <mat-chip [color]="getStatusColor(activity.isArchived)" selected>
-                {{getStatusDisplayName(activity.isArchived)}}
-              </mat-chip>
-            </mat-chip-set>
-          </td>
-        </ng-container>
-
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef> Actions </th>
-          <td mat-cell *matCellDef="let activity">
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
+    <!-- Activities Content -->
+    <div *ngIf="!isLoading" class="activities-content">
+      <!-- Header Section -->
+      <div class="page-header">
+        <div class="header-content">
+          <div class="title-section">
+            <div class="page-icon">
+              <mat-icon>event</mat-icon>
+            </div>
+            <div class="title-text">
+              <h1>{{pageTitle}}</h1>
+              <p class="subtitle">Manage and explore laboratory activities</p>
+            </div>
+          </div>
+          
+          <div class="header-actions">
+            <button *ngIf="canCreateActivity" 
+                    mat-raised-button 
+                    class="create-btn"
+                    (click)="createNew()">
+              <mat-icon>add</mat-icon>
+              New Activity
             </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="viewActivity(activity._id)">
-                <mat-icon>visibility</mat-icon>
-                <span>View</span>
-              </button>
-              
-              <ng-container *ngIf="userRole !== 'associated_member'">
-                <button mat-menu-item (click)="editActivity(activity._id)">
-                  <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
-                </button>
-                
-                <button mat-menu-item (click)="toggleArchiveStatus(activity._id)">
-                  <mat-icon>{{activity.isArchived ? 'unarchive' : 'archive'}}</mat-icon>
-                  <span>{{activity.isArchived ? 'Unarchive' : 'Archive'}}</span>
-                </button>
-                
-                <button *ngIf="userRole === 'administrator'" mat-menu-item (click)="deleteActivity(activity._id)">
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-                </button>
-              </ng-container>
-            </mat-menu>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-      <div *ngIf="activities.length === 0 && !isLoading" class="no-data">
-        <mat-icon>event</mat-icon>
-        <p>No activities found</p>
+          </div>
+        </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+
+      <!-- Stats Cards -->
+      <div class="stats-section" *ngIf="activities.length > 0">
+        <div class="stats-grid">
+          <div class="stat-card total">
+            <div class="stat-icon">
+              <mat-icon>event</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{activities.length}}</h3>
+              <p>Total Activities</p>
+            </div>
+          </div>
+          
+          <div class="stat-card conferences">
+            <div class="stat-icon">
+              <mat-icon>campaign</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{getTypeCount('conference')}}</h3>
+              <p>Conferences</p>
+            </div>
+          </div>
+          
+          <div class="stat-card workshops">
+            <div class="stat-icon">
+              <mat-icon>build</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{getTypeCount('workshop')}}</h3>
+              <p>Workshops</p>
+            </div>
+          </div>
+          
+          <div class="stat-card active">
+            <div class="stat-icon">
+              <mat-icon>play_circle</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{getActiveCount()}}</h3>
+              <p>Active</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activities Section -->
+      <div class="activities-section">
+        <div class="section-header">
+          <h2>Activities List</h2>
+        </div>
+
+        <!-- List View -->
+        <div class="activities-list">
+          <div class="list-header">
+            <div class="header-row">
+              <div class="col-title">Title</div>
+              <div class="col-type">Type</div>
+              <div class="col-date">Date</div>
+              <div class="col-location">Location</div>
+              <div class="col-organizers">Organizers</div>
+              <div class="col-status">Status</div>
+              <div class="col-actions">Actions</div>
+            </div>
+          </div>
+          
+          <div class="list-body">
+            <div *ngFor="let activity of activities" class="list-item" (click)="viewActivity(activity._id)">
+              <div class="col-title">
+                <div class="activity-title">{{activity.title}}</div>
+              </div>
+              <div class="col-type">
+                <mat-chip [class]="'type-' + activity.type">
+                  {{getTypeDisplayName(activity.type)}}
+                </mat-chip>
+              </div>
+              <div class="col-date">
+                <div class="date-display">
+                  <mat-icon>schedule</mat-icon>
+                  <span>{{activity.date | date:'short'}}</span>
+                </div>
+              </div>
+              <div class="col-location">
+                <div class="location-display">
+                  <mat-icon>place</mat-icon>
+                  <span>{{activity.location}}</span>
+                </div>
+              </div>
+              <div class="col-organizers">
+                <div class="organizers-preview">
+                  <span *ngFor="let organizer of activity.organizers.slice(0, 2); let last = last">
+                    {{organizer.firstName}} {{organizer.lastName}}<span *ngIf="!last">, </span>
+                  </span>
+                  <span *ngIf="activity.organizers.length > 2">
+                    +{{activity.organizers.length - 2}} more
+                  </span>
+                </div>
+              </div>
+              <div class="col-status">
+                <mat-chip [class]="activity.isArchived ? 'status-archived' : 'status-active'">
+                  {{getStatusDisplayName(activity.isArchived)}}
+                </mat-chip>
+              </div>
+              <div class="col-actions">
+                <button mat-icon-button [matMenuTriggerFor]="listMenu" (click)="$event.stopPropagation()">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #listMenu="matMenu" class="modern-menu-panel">
+                  <button mat-menu-item (click)="viewActivity(activity._id)" class="menu-item-view">
+                    <mat-icon>visibility</mat-icon>
+                    <span>View</span>
+                  </button>
+                  
+                  <ng-container *ngIf="userRole !== 'associated_member'">
+                    <button mat-menu-item (click)="editActivity(activity._id)" class="menu-item-edit">
+                      <mat-icon>edit</mat-icon>
+                      <span>Edit</span>
+                    </button>
+                    
+                    <button mat-menu-item (click)="toggleArchiveStatus(activity._id)" class="menu-item-archive">
+                      <mat-icon>{{activity.isArchived ? 'unarchive' : 'archive'}}</mat-icon>
+                      <span>{{activity.isArchived ? 'Unarchive' : 'Archive'}}</span>
+                    </button>
+                    
+                    <button *ngIf="userRole === 'administrator'" mat-menu-item (click)="deleteActivity(activity._id)" class="menu-item-delete">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                  </ng-container>
+                </mat-menu>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="activities.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <mat-icon>event</mat-icon>
+          </div>
+          <h3>No Activities Found</h3>
+          <p>Start by creating your first activity to see it here.</p>
+          <button *ngIf="canCreateActivity" mat-raised-button color="primary" (click)="createNew()">
+            <mat-icon>add</mat-icon>
+            Create Activity
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

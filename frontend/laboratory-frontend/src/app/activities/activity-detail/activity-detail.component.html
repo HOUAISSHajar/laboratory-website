@@ -1,93 +1,196 @@
-<div class="activity-detail-container">
-  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-
-  <div *ngIf="activity" class="activity-content">
-    <div class="header">
-      <div class="title-section">
-        <h1>{{activity.title}}</h1>
-        <mat-chip-set>
-          <mat-chip color="accent" selected>
-            {{getTypeDisplayName(activity.type)}}
-          </mat-chip>
-          <mat-chip [color]="getStatusColor(activity.isArchived)" selected>
-            {{getStatusDisplayName(activity.isArchived)}}
-          </mat-chip>
-        </mat-chip-set>
-      </div>
-      
-      <button mat-raised-button color="primary" routerLink="/activities">
-        <mat-icon>arrow_back</mat-icon>
-        Back to Activities
-      </button>
+<div class="activity-detail-wrapper">
+  <div class="activity-detail-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading activity details...</p>
     </div>
 
-    <div class="info-grid">
-      <mat-card class="activity-info-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>info</mat-icon>
-          <mat-card-title>Activity Info</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="info-item">
-            <strong>Type:</strong>
-            <span>{{getTypeDisplayName(activity.type)}}</span>
+    <!-- Activity Content -->
+    <div *ngIf="activity && !isLoading" class="activity-content">
+      <!-- Header Section -->
+      <div class="detail-header">
+        <div class="header-content">
+          <div class="back-section">
+            <button mat-icon-button class="back-btn" routerLink="/activities">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <div class="breadcrumb">
+              <span class="breadcrumb-item">Activities</span>
+              <mat-icon>chevron_right</mat-icon>
+              <span class="breadcrumb-current">Details</span>
+            </div>
           </div>
-          <div class="info-item">
-            <strong>Date & Time:</strong>
-            <span>{{activity.date | date:'full'}}</span>
-          </div>
-          <div class="info-item">
-            <strong>Location:</strong>
-            <span>{{activity.location}}</span>
-          </div>
-          <div class="info-item">
-            <strong>Status:</strong>
-            <mat-chip [color]="getStatusColor(activity.isArchived)" selected>
+        </div>
+      </div>
+
+      <!-- Activity Info Card -->
+      <div class="activity-info-card">
+        <div class="card-header">
+          <div class="activity-meta">
+            <mat-chip [class]="'type-' + activity.type" class="type-chip">
+              {{getTypeDisplayName(activity.type)}}
+            </mat-chip>
+            <mat-chip [class]="activity.isArchived ? 'status-archived' : 'status-active'" class="status-chip">
               {{getStatusDisplayName(activity.isArchived)}}
             </mat-chip>
+            <div class="date-badge">
+              <mat-icon>schedule</mat-icon>
+              <span>{{activity.date | date:'short'}}</span>
+            </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
 
-      <mat-card class="organizers-card" *ngIf="activity.organizers && activity.organizers.length > 0">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>people</mat-icon>
-          <mat-card-title>Organizers</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-chip-set>
-            <mat-chip *ngFor="let organizer of activity.organizers" class="organizer-chip">
-              <mat-icon>person</mat-icon>
-              {{organizer.firstName}} {{organizer.lastName}}
-            </mat-chip>
-          </mat-chip-set>
-        </mat-card-content>
-      </mat-card>
+        <div class="card-content">
+          <h1 class="activity-title">{{activity.title}}</h1>
+          
+          <div class="activity-stats">
+            <div class="stat-item">
+              <mat-icon>people</mat-icon>
+              <span>{{activity.organizers?.length || 0}} Organizers</span>
+            </div>
+            <div class="stat-item" *ngIf="activity.participants && activity.participants.length > 0">
+              <mat-icon>group</mat-icon>
+              <span>{{activity.participants.length}} Participants</span>
+            </div>
+            <div class="stat-item">
+              <mat-icon>place</mat-icon>
+              <span>{{activity.location}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <mat-card class="participants-card" *ngIf="activity.participants && activity.participants.length > 0">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>group</mat-icon>
-          <mat-card-title>Participants</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-chip-set>
-            <mat-chip *ngFor="let participant of activity.participants" class="participant-chip">
-              <mat-icon>person_outline</mat-icon>
-              {{participant.firstName}} {{participant.lastName}}
-            </mat-chip>
-          </mat-chip-set>
-        </mat-card-content>
-      </mat-card>
+      <!-- Content Grid -->
+      <div class="content-grid">
+        <!-- Activity Details -->
+        <div class="info-card details-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>info</mat-icon>
+              </div>
+              <h3>Activity Details</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="details-list">
+              <div class="detail-item">
+                <div class="detail-label">
+                  <mat-icon>category</mat-icon>
+                  <span>Type</span>
+                </div>
+                <div class="detail-value">
+                  <mat-chip [class]="'type-' + activity.type">
+                    {{getTypeDisplayName(activity.type)}}
+                  </mat-chip>
+                </div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">
+                  <mat-icon>schedule</mat-icon>
+                  <span>Date & Time</span>
+                </div>
+                <div class="detail-value">
+                  <span class="date-value">{{activity.date | date:'full'}}</span>
+                </div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">
+                  <mat-icon>place</mat-icon>
+                  <span>Location</span>
+                </div>
+                <div class="detail-value">
+                  <span>{{activity.location}}</span>
+                </div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">
+                  <mat-icon>flag</mat-icon>
+                  <span>Status</span>
+                </div>
+                <div class="detail-value">
+                  <mat-chip [class]="activity.isArchived ? 'status-archived' : 'status-active'">
+                    {{getStatusDisplayName(activity.isArchived)}}
+                  </mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Organizers Section -->
+        <div class="info-card organizers-card" *ngIf="activity.organizers && activity.organizers.length > 0">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>people</mat-icon>
+              </div>
+              <h3>Organizers</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="organizers-grid">
+              <div *ngFor="let organizer of activity.organizers" class="organizer-item">
+                <div class="organizer-avatar">
+                  <span>{{getOrganizerInitials(organizer)}}</span>
+                </div>
+                <div class="organizer-info">
+                  <h4>{{organizer.firstName}} {{organizer.lastName}}</h4>
+                  <p>{{organizer.email}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Participants Section -->
+        <div class="info-card participants-card" *ngIf="activity.participants && activity.participants.length > 0">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>group</mat-icon>
+              </div>
+              <h3>Participants</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="participants-grid">
+              <div *ngFor="let participant of activity.participants" class="participant-item">
+                <div class="participant-avatar">
+                  <span>{{getParticipantInitials(participant)}}</span>
+                </div>
+                <div class="participant-info">
+                  <h4>{{participant.firstName}} {{participant.lastName}}</h4>
+                  <p>{{participant.email}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description Section -->
+      <div class="description-section" *ngIf="activity.description">
+        <div class="description-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>description</mat-icon>
+              </div>
+              <h3>Description</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="description-content">
+              <p>{{activity.description}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <mat-card class="description-card" *ngIf="activity.description">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>description</mat-icon>
-        <mat-card-title>Description</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>{{activity.description}}</p>
-      </mat-card-content>
-    </mat-card>
   </div>
 </div>

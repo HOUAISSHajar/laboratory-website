@@ -110,4 +110,22 @@ export class ActivityListComponent implements OnInit {
   getStatusColor(isArchived: boolean): string {
     return isArchived ? 'warn' : 'primary';
   }
+
+  // New methods for modern features
+  getTypeCount(type: string): number {
+    return this.activities.filter(activity => activity.type === type).length;
+  }
+
+  getActiveCount(): number {
+    return this.activities.filter(activity => !activity.isArchived).length;
+  }
+
+  // Filter and search methods (to be implemented later)
+  openFilterDialog() {
+    console.log('Opening filter dialog...');
+  }
+
+  openSearchDialog() {
+    console.log('Opening search dialog...');
+  }
 }
