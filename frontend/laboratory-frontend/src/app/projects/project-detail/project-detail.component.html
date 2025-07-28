@@ -1,183 +1,262 @@
-<div class="project-detail-container">
-  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-
-  <div *ngIf="project" class="project-content">
-    <div class="header">
-      <div class="title-section">
-        <h1>{{project.title}}</h1>
-        <mat-chip-set>
-          <mat-chip [color]="project.status === 'ongoing' ? 'accent' : 'primary'" selected>
-            {{project.status | titlecase}}
-          </mat-chip>
-        </mat-chip-set>
-      </div>
-      
-      <button mat-raised-button color="primary" routerLink="/projects">
-        <mat-icon>arrow_back</mat-icon>
-        Back to Projects
-      </button>
+<div class="project-detail-wrapper">
+  <div class="project-detail-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading project details...</p>
     </div>
 
-    <div class="info-grid">
-      <mat-card class="summary-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>description</mat-icon>
-          <mat-card-title>Project Summary</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{project.summary}}</p>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="timeline-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>schedule</mat-icon>
-          <mat-card-title>Timeline</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="timeline-info">
-            <div class="date-item">
-              <strong>Start Date:</strong>
-              <span>{{project.startDate | date:'mediumDate'}}</span>
-            </div>
-            <div class="date-item">
-              <strong>End Date:</strong>
-              <span>{{project.endDate | date:'mediumDate'}}</span>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="members-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>people</mat-icon>
-          <mat-card-title>Team Members</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-chip-set>
-            <mat-chip *ngFor="let member of project.members" class="member-chip">
-              <mat-icon>person</mat-icon>
-              {{member.firstName}} {{member.lastName}}
-            </mat-chip>
-          </mat-chip-set>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="results-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>insights</mat-icon>
-          <mat-card-title>Expected Results</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{project.expectedResults || 'No expected results specified'}}</p>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <mat-card class="documents-card">
-      <mat-card-header>
+    <!-- Project Content -->
+    <div *ngIf="project && !isLoading" class="project-content">
+      <!-- Header Section -->
+      <div class="page-header">
         <div class="header-content">
-          <div class="header-title">
-            <mat-icon mat-card-avatar>folder</mat-icon>
-            <mat-card-title>Project Documents</mat-card-title>
-          </div>
-          <button *ngIf="canUploadDocument" 
-                  mat-raised-button 
-                  color="accent" 
-                  (click)="openUploadDialog()">
-            <mat-icon>upload</mat-icon>
-            Upload Project Files
-          </button>
-        </div>
-      </mat-card-header>
-      
-      <mat-card-content>
-        <div *ngIf="project.documents && project.documents.length > 0">
-          <div class="documents-list">
-            <div *ngFor="let doc of project.documents" class="document-item">
-              <!-- Icône du document basée sur le type -->
-              <div class="document-icon">
-                <mat-icon [ngClass]="getDocumentIconClass(doc.title)">
-                  {{getDocumentIcon(doc.title)}}
-                </mat-icon>
+          <div class="title-section">
+            <div class="page-icon">
+              <mat-icon>work</mat-icon>
+            </div>
+            <div class="title-text">
+              <h1>{{project.title}}</h1>
+              <div class="project-meta">
+                <mat-chip [class]="'status-' + project.status">
+                  {{getStatusDisplayName(project.status)}}
+                </mat-chip>
+                <span class="project-timeline">
+                  {{project.startDate | date:'mediumDate'}} - {{project.endDate | date:'mediumDate'}}
+                </span>
               </div>
-              
-              <!-- Informations du document -->
-              <div class="document-info">
-                <div class="document-title">{{doc.title}}</div>
-                <div class="document-details">
-                  Uploaded: {{doc.uploadDate | date:'short'}} • {{getFileType(doc.title)}}
+            </div>
+          </div>
+          
+          <div class="header-actions">
+            <button mat-stroked-button class="back-btn" routerLink="/projects">
+              <mat-icon>arrow_back</mat-icon>
+              Back to Projects
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Overview Cards -->
+      <div class="overview-section">
+        <div class="overview-grid">
+          <!-- Summary Card -->
+          <div class="overview-card summary-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <mat-icon>description</mat-icon>
+              </div>
+              <h3>Project Summary</h3>
+            </div>
+            <div class="card-content">
+              <p>{{project.summary}}</p>
+            </div>
+          </div>
+
+          <!-- Timeline Card -->
+          <div class="overview-card timeline-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <mat-icon>schedule</mat-icon>
+              </div>
+              <h3>Timeline & Progress</h3>
+            </div>
+            <div class="card-content">
+              <div class="timeline-info">
+                <div class="date-item">
+                  <mat-icon>play_arrow</mat-icon>
+                  <div class="date-content">
+                    <strong>Start Date</strong>
+                    <span>{{project.startDate | date:'mediumDate'}}</span>
+                  </div>
+                </div>
+                <div class="date-item">
+                  <mat-icon>stop</mat-icon>
+                  <div class="date-content">
+                    <strong>End Date</strong>
+                    <span>{{project.endDate | date:'mediumDate'}}</span>
+                  </div>
                 </div>
               </div>
+              <div class="progress-section">
+                <div class="progress-header">
+                  <span>Progress</span>
+                  <span class="progress-percentage">{{getProjectProgress()}}%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width.%]="getProjectProgress()"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Members Card -->
+          <div class="overview-card members-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <mat-icon>people</mat-icon>
+              </div>
+              <h3>Team Members</h3>
+            </div>
+            <div class="card-content">
+              <div class="members-list">
+                <div *ngFor="let member of project.members" class="member-item">
+                  <div class="member-avatar">
+                    {{member.firstName.charAt(0)}}{{member.lastName.charAt(0)}}
+                  </div>
+                  <div class="member-info">
+                    <div class="member-name">{{member.firstName}} {{member.lastName}}</div>
+                    <div class="member-role">{{getRoleDisplayName(member.role)}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expected Results Card -->
+          <div class="overview-card results-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <mat-icon>insights</mat-icon>
+              </div>
+              <h3>Expected Results</h3>
+            </div>
+            <div class="card-content">
+              <p>{{project.expectedResults || 'No expected results specified yet.'}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents Section -->
+      <div class="documents-section">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="header-left">
+              <div class="section-icon">
+                <mat-icon>folder</mat-icon>
+              </div>
+              <h2>Project Documents</h2>
+            </div>
+            <button *ngIf="canUploadDocument" 
+                    mat-raised-button 
+                    class="upload-btn"
+                    (click)="openUploadDialog()">
+              <mat-icon>upload</mat-icon>
+              Upload Document
+            </button>
+          </div>
+          
+          <div class="section-content">
+            <!-- Documents List -->
+            <div *ngIf="project.documents && project.documents.length > 0" class="documents-grid">
+              <div *ngFor="let doc of project.documents" class="document-card">
+                <div class="document-icon">
+                  <mat-icon [ngClass]="getDocumentIconClass(doc.title)">
+                    {{getDocumentIcon(doc.title)}}
+                  </mat-icon>
+                </div>
+                
+                <div class="document-info">
+                  <div class="document-title">{{doc.title}}</div>
+                  <div class="document-meta">
+                    <span class="upload-date">{{doc.uploadDate | date:'short'}}</span>
+                    <span class="file-type">{{getFileType(doc.title)}}</span>
+                  </div>
+                </div>
+                
+                <div class="document-actions">
+                  <button *ngIf="canDeleteDocument" 
+                          mat-icon-button 
+                          class="delete-btn"
+                          (click)="deleteDocument(doc._id, doc.title)"
+                          matTooltip="Delete Document">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div *ngIf="!project.documents || project.documents.length === 0" class="empty-documents">
+              <div class="empty-icon">
+                <mat-icon>folder_open</mat-icon>
+              </div>
+              <h3>No Documents Yet</h3>
+              <p>Upload project documents to share with your team.</p>
+              <button *ngIf="canUploadDocument" 
+                      mat-raised-button 
+                      color="primary" 
+                      (click)="openUploadDialog()">
+                <mat-icon>upload</mat-icon>
+                Upload First Document
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Dialog -->
+    <div *ngIf="showUploadDialog" class="upload-overlay" (click)="closeUploadDialog()">
+      <div class="upload-dialog" (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+          <h3>Upload Project Document</h3>
+          <button mat-icon-button (click)="closeUploadDialog()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        
+        <div class="dialog-content">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Document Title</mat-label>
+            <input matInput [(ngModel)]="documentTitle" placeholder="Enter document title">
+          </mat-form-field>
+
+          <div class="file-upload-section">
+            <input #fileInput 
+                   type="file" 
+                   (change)="onFileSelected($event)" 
+                   accept=".pdf,.doc,.docx"
+                   style="display: none;">
+            
+            <div class="upload-area" [class.has-file]="selectedFile" (click)="fileInput.click()">
+              <div *ngIf="!selectedFile" class="upload-placeholder">
+                <mat-icon>cloud_upload</mat-icon>
+                <h4>Choose File to Upload</h4>
+                <p>Click here to select a document</p>
+                <small>Supported formats: PDF, DOC, DOCX (Max 10MB)</small>
+              </div>
               
-              <!-- Boutons d'action -->
-              <div class="document-actions">
-                <!-- Bouton Delete - visible seulement pour membres du projet et admin -->
-                <button *ngIf="canDeleteDocument" 
-                        mat-icon-button 
-                        color="warn" 
-                        (click)="deleteDocument(doc._id, doc.title)"
-                        matTooltip="Delete Document">
-                  <mat-icon>delete</mat-icon>
+              <div *ngIf="selectedFile" class="file-preview">
+                <div class="file-icon">
+                  <mat-icon [ngClass]="getDocumentIconClass(selectedFile.name)">
+                    {{getDocumentIcon(selectedFile.name)}}
+                  </mat-icon>
+                </div>
+                <div class="file-details">
+                  <div class="file-name">{{selectedFile.name}}</div>
+                  <div class="file-size">{{formatFileSize(selectedFile.size)}}</div>
+                </div>
+                <button mat-icon-button (click)="$event.stopPropagation(); selectedFile = null">
+                  <mat-icon>close</mat-icon>
                 </button>
               </div>
             </div>
           </div>
         </div>
-        
-        <div *ngIf="!project.documents || project.documents.length === 0" class="no-docs">
-          <mat-icon>folder_open</mat-icon>
-          <p>No documents available</p>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
 
-  <!-- Upload Dialog -->
-  <div *ngIf="showUploadDialog" class="upload-overlay" (click)="closeUploadDialog()">
-    <div class="upload-dialog" (click)="$event.stopPropagation()">
-      <h3>Upload Project Document</h3>
-      
-      <mat-form-field appearance="outline">
-        <mat-label>Document Title</mat-label>
-        <input matInput [(ngModel)]="documentTitle" placeholder="Enter document title">
-      </mat-form-field>
-
-      <div class="file-upload">
-        <input #fileInput 
-               type="file" 
-               (change)="onFileSelected($event)" 
-               accept=".pdf,.doc,.docx"
-               style="display: none;">
-        
-        <button mat-stroked-button (click)="fileInput.click()">
-          <mat-icon>attach_file</mat-icon>
-          Choose File
-        </button>
-        
-        <div *ngIf="selectedFile" class="file-info">
-          <div class="file-details">
-            <mat-icon [ngClass]="getDocumentIconClass(selectedFile.name)">
-              {{getDocumentIcon(selectedFile.name)}}
-            </mat-icon>
-            <span class="file-name">{{selectedFile.name}}</span>
-            <span class="file-size">({{formatFileSize(selectedFile.size)}})</span>
-          </div>
+        <div class="dialog-actions">
+          <button mat-button (click)="closeUploadDialog()">Cancel</button>
+          <button mat-raised-button 
+                  color="primary" 
+                  [disabled]="!selectedFile || !documentTitle.trim() || uploadInProgress"
+                  (click)="uploadDocument()">
+            <mat-icon *ngIf="uploadInProgress">hourglass_empty</mat-icon>
+            <mat-icon *ngIf="!uploadInProgress">upload</mat-icon>
+            {{uploadInProgress ? 'Uploading...' : 'Upload Document'}}
+          </button>
         </div>
-        
-        <div *ngIf="!selectedFile" class="file-hint">
-          <small>Accepted formats: PDF, DOC, DOCX (Max 10MB)</small>
-        </div>
-      </div>
-
-      <div class="dialog-actions">
-        <button mat-button (click)="closeUploadDialog()">Cancel</button>
-        <button mat-raised-button 
-                color="primary" 
-                [disabled]="!selectedFile || uploadInProgress"
-                (click)="uploadDocument()">
-          {{uploadInProgress ? 'Uploading...' : 'Upload'}}
-        </button>
       </div>
     </div>
   </div>

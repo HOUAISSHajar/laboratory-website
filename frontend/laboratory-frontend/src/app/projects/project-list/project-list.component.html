@@ -1,93 +1,185 @@
-<div class="projects-container">
-    <div class="header">
-      <h1>{{pageTitle}}</h1>
-      
-      <button *ngIf="canCreateProject" 
-              mat-raised-button 
-              color="primary" 
-              (click)="createNew()">
-        <mat-icon>add</mat-icon>
-        New Project
-      </button>
+<div class="projects-wrapper">
+  <div class="projects-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading projects...</p>
     </div>
-  
-    <mat-card>
-      <mat-card-content>
-        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-  
-        <table mat-table [dataSource]="projects" class="projects-table">
-          <!-- Title Column -->
-          <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef> Title </th>
-            <td mat-cell *matCellDef="let project"> {{project.title}} </td>
-          </ng-container>
-  
-          <!-- Status Column -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef> Status </th>
-            <td mat-cell *matCellDef="let project">
-              <mat-chip-set>
-                <mat-chip [color]="project.status === 'ongoing' ? 'accent' : 'primary'">
-                  {{project.status}}
+
+    <!-- Projects Content -->
+    <div *ngIf="!isLoading" class="projects-content">
+      <!-- Header Section -->
+      <div class="page-header">
+        <div class="header-content">
+          <div class="title-section">
+            <div class="page-icon">
+              <mat-icon>work</mat-icon>
+            </div>
+            <div class="title-text">
+              <h1>{{pageTitle}}</h1>
+              <p class="subtitle">Manage and explore research projects</p>
+            </div>
+          </div>
+          
+          <div class="header-actions">
+            <button *ngIf="canCreateProject" 
+                    mat-raised-button 
+                    class="create-btn"
+                    (click)="createNew()">
+              <mat-icon>add</mat-icon>
+              New Project
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-section" *ngIf="projects.length > 0">
+        <div class="stats-grid">
+          <div class="stat-card total">
+            <div class="stat-icon">
+              <mat-icon>work</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{projects.length}}</h3>
+              <p>Total Projects</p>
+            </div>
+          </div>
+          
+          <div class="stat-card ongoing">
+            <div class="stat-icon">
+              <mat-icon>play_circle</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{getStatusCount('ongoing')}}</h3>
+              <p>Ongoing</p>
+            </div>
+          </div>
+          
+          <div class="stat-card completed">
+            <div class="stat-icon">
+              <mat-icon>check_circle</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{getStatusCount('completed')}}</h3>
+              <p>Completed</p>
+            </div>
+          </div>
+          
+          <div class="stat-card pending">
+            <div class="stat-icon">
+              <mat-icon>schedule</mat-icon>
+            </div>
+            <div class="stat-content">
+              <h3>{{getStatusCount('pending')}}</h3>
+              <p>Pending</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Section -->
+      <div class="projects-section">
+        <div class="section-header">
+          <h2>Projects List</h2>
+        </div>
+
+        <!-- List View -->
+        <div class="projects-list">
+          <div class="list-header">
+            <div class="header-row">
+              <div class="col-title">Title</div>
+              <div class="col-status">Status</div>
+              <div class="col-dates">Timeline</div>
+              <div class="col-members">Members</div>
+              <div class="col-progress">Progress</div>
+              <div class="col-actions">Actions</div>
+            </div>
+          </div>
+          
+          <div class="list-body">
+            <div *ngFor="let project of projects" class="list-item" (click)="viewProject(project._id)">
+              <div class="col-title">
+                <div class="project-title">{{project.title}}</div>
+                <div class="project-summary">{{project.summary | slice:0:80}}{{project.summary.length > 80 ? '...' : ''}}</div>
+              </div>
+              <div class="col-status">
+                <mat-chip [class]="'status-' + project.status">
+                  {{getStatusDisplayName(project.status)}}
                 </mat-chip>
-              </mat-chip-set>
-            </td>
-          </ng-container>
-  
-          <!-- Start Date Column -->
-          <ng-container matColumnDef="startDate">
-            <th mat-header-cell *matHeaderCellDef> Start Date </th>
-            <td mat-cell *matCellDef="let project"> {{project.startDate | date}} </td>
-          </ng-container>
-  
-          <!-- Members Column -->
-          <ng-container matColumnDef="members">
-            <th mat-header-cell *matHeaderCellDef> Members </th>
-            <td mat-cell *matCellDef="let project">
-              <mat-chip-set>
-                <mat-chip *ngFor="let member of project.members">
-                  {{member.firstName}} {{member.lastName}}
-                </mat-chip>
-              </mat-chip-set>
-            </td>
-          </ng-container>
-  
-          <!-- Actions Column -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> Actions </th>
-            <td mat-cell *matCellDef="let project">
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="viewProject(project._id)">
-                  <mat-icon>visibility</mat-icon>
-                  <span>View</span>
-              </button>
-              <ng-container *ngIf="userRole !== 'associated_member'">
-                  <button mat-menu-item (click)="editProject(project._id)">
+              </div>
+              <div class="col-dates">
+                <div class="dates-display">
+                  <div class="date-item">
+                    <mat-icon>play_arrow</mat-icon>
+                    <span>{{project.startDate | date:'short'}}</span>
+                  </div>
+                  <div class="date-item">
+                    <mat-icon>stop</mat-icon>
+                    <span>{{project.endDate | date:'short'}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-members">
+                <div class="members-preview">
+                  <div class="member-avatars">
+                    <div *ngFor="let member of project.members.slice(0, 3)" class="member-avatar">
+                      {{member.firstName.charAt(0)}}{{member.lastName.charAt(0)}}
+                    </div>
+                    <div *ngIf="project.members.length > 3" class="member-avatar more">
+                      +{{project.members.length - 3}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-progress">
+                <div class="progress-display">
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="getProjectProgress(project)"></div>
+                  </div>
+                  <span class="progress-text">{{getProjectProgress(project)}}%</span>
+                </div>
+              </div>
+              <div class="col-actions">
+                <button mat-icon-button [matMenuTriggerFor]="listMenu" (click)="$event.stopPropagation()">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #listMenu="matMenu" class="modern-menu-panel">
+                  <button mat-menu-item (click)="viewProject(project._id)" class="menu-item-view">
+                    <mat-icon>visibility</mat-icon>
+                    <span>View</span>
+                  </button>
+                  
+                  <ng-container *ngIf="userRole !== 'associated_member'">
+                    <button mat-menu-item (click)="editProject(project._id)" class="menu-item-edit">
                       <mat-icon>edit</mat-icon>
                       <span>Edit</span>
-                  </button>
-                  <button *ngIf="userRole === 'administrator'" mat-menu-item (click)="deleteProject(project._id)">
+                    </button>
+                    
+                    <button *ngIf="userRole === 'administrator'" mat-menu-item (click)="deleteProject(project._id)" class="menu-item-delete">
                       <mat-icon>delete</mat-icon>
                       <span>Delete</span>
-                  </button>
-              </ng-container>
-              </mat-menu>
-            </td>
-          </ng-container>
-  
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+                    </button>
+                  </ng-container>
+                </mat-menu>
+              </div>
+            </div>
+          </div>
+        </div>
 
-
-        <!-- Message "No projects found" ajouté ici -->
-        <div *ngIf="projects.length === 0 && !isLoading" class="no-data">
-  <mat-icon>work</mat-icon>
-  <p>No projects found</p>
-</div>
-      </mat-card-content>
-    </mat-card>
+        <!-- Empty State -->
+        <div *ngIf="projects.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <mat-icon>work</mat-icon>
+          </div>
+          <h3>No Projects Found</h3>
+          <p>Start by creating your first project to see it here.</p>
+          <button *ngIf="canCreateProject" mat-raised-button color="primary" (click)="createNew()">
+            <mat-icon>add</mat-icon>
+            Create Project
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+</div>

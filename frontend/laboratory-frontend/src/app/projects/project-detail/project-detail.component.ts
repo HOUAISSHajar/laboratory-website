@@ -68,6 +68,70 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
+  // New methods for modern features
+  getStatusDisplayName(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'ongoing': 'Ongoing',
+      'completed': 'Completed',
+      'pending': 'Pending'
+    };
+    return statusMap[status] || status;
+  }
+
+  getRoleDisplayName(role: string): string {
+    const roleMap: { [key: string]: string } = {
+      'faculty_researcher': 'Faculty Researcher',
+      'phd_researcher': 'PhD Researcher',
+      'administrator': 'Administrator',
+      'associated_member': 'Associated Member'
+    };
+    return roleMap[role] || role;
+  }
+
+  getProjectProgress(): number {
+    if (!this.project) return 0;
+
+    // Calculate progress based on project status and timeline
+    const now = new Date();
+    const startDate = new Date(this.project.startDate);
+    const endDate = new Date(this.project.endDate);
+
+    if (this.project.status === 'completed') {
+      return 100;
+    }
+
+    if (this.project.status === 'pending' || now < startDate) {
+      return 0;
+    }
+
+    if (now > endDate) {
+      return this.project.status === 'ongoing' ? 90 : 100;
+    }
+
+    // Calculate based on time elapsed
+    const totalDuration = endDate.getTime() - startDate.getTime();
+    const elapsed = now.getTime() - startDate.getTime();
+    const progress = Math.round((elapsed / totalDuration) * 100);
+
+    return Math.min(Math.max(progress, 0), 95); // Cap at 95% if ongoing
+  }
+
+  getDaysRemaining(): number {
+    if (!this.project) return 0;
+    const now = new Date();
+    const endDate = new Date(this.project.endDate);
+    const diffTime = endDate.getTime() - now.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  isProjectOverdue(): boolean {
+    if (!this.project) return false;
+    const now = new Date();
+    const endDate = new Date(this.project.endDate);
+    return now > endDate && this.project.status !== 'completed';
+  }
+
+  // Upload dialog methods
   openUploadDialog() {
     this.showUploadDialog = true;
     this.selectedFile = null;
@@ -99,7 +163,9 @@ export class ProjectDetailComponent implements OnInit {
       if (allowedTypes.includes(file.type)) {
         this.selectedFile = file;
         // Set default title to filename without extension
-        this.documentTitle = file.name.replace(/\.[^/.]+$/, '');
+        if (!this.documentTitle) {
+          this.documentTitle = file.name.replace(/\.[^/.]+$/, '');
+        }
       } else {
         this.snackBar.open('Only PDF and Word documents are allowed', 'Close', { duration: 3000 });
       }
@@ -107,12 +173,12 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   uploadDocument() {
-    if (!this.selectedFile || !this.project) return;
+    if (!this.selectedFile || !this.project || !this.documentTitle.trim()) return;
 
     this.uploadInProgress = true;
     const formData = new FormData();
     formData.append('document', this.selectedFile);
-    formData.append('title', this.documentTitle || this.selectedFile.name);
+    formData.append('title', this.documentTitle.trim());
 
     this.projectService.uploadDocument(this.project._id, formData).subscribe({
       next: (response) => {
@@ -127,8 +193,6 @@ export class ProjectDetailComponent implements OnInit {
       }
     });
   }
-
- 
 
   deleteDocument(documentId: string, fileName: string) {
     if (!this.project) return;
@@ -146,29 +210,27 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
-  // Get file extension from filename
+  // File utility methods
   getFileExtension(filename: string): string {
     const extension = filename.split('.').pop()?.toLowerCase();
     return extension ? `.${extension.toUpperCase()}` : '';
   }
 
-  // Get file type description
   getFileType(filename: string): string {
     const extension = filename.split('.').pop()?.toLowerCase();
     
     switch (extension) {
       case 'pdf':
-        return 'PDF';
+        return 'PDF Document';
       case 'doc':
-        return 'Word';
+        return 'Word Document';
       case 'docx':
-        return 'Word';
+        return 'Word Document';
       default:
         return 'Document';
     }
   }
 
-  // Get appropriate icon based on file extension
   getDocumentIcon(filename: string): string {
     const extension = filename.split('.').pop()?.toLowerCase();
     
@@ -183,7 +245,6 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
-  // Get CSS class for icon color based on file type
   getDocumentIconClass(filename: string): string {
     const extension = filename.split('.').pop()?.toLowerCase();
     
@@ -198,12 +259,39 @@ export class ProjectDetailComponent implements OnInit {
     }
   }
 
-  // Format file size for display
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // Additional utility methods
+  getProjectDuration(): number {
+    if (!this.project) return 0;
+    const start = new Date(this.project.startDate);
+    const end = new Date(this.project.endDate);
+    const diffTime = end.getTime() - start.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  getTimeElapsed(): number {
+    if (!this.project) return 0;
+    const now = new Date();
+    const startDate = new Date(this.project.startDate);
+    
+    if (now < startDate) return 0;
+    
+    const diffTime = now.getTime() - startDate.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  getMemberCount(): number {
+    return this.project?.members?.length || 0;
+  }
+
+  getDocumentCount(): number {
+    return this.project?.documents?.length || 0;
   }
 }

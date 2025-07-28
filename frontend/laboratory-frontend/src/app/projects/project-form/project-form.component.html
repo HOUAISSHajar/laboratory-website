@@ -1,76 +1,234 @@
-<div class="project-form-container">
-  <h1>{{isEditing ? 'Edit Project' : 'Create New Project'}}</h1>
+<div class="project-form-wrapper">
+  <div class="project-form-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>{{isEditing ? 'Loading project...' : 'Preparing form...'}}</p>
+    </div>
 
-  <mat-card>
-    <mat-card-content>
-      <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
-        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Title</mat-label>
-          <input matInput formControlName="title" required>
-          <mat-error *ngIf="projectForm.get('title')?.hasError('required')">
-            Title is required
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Summary</mat-label>
-          <textarea matInput formControlName="summary" rows="4" required></textarea>
-          <mat-error *ngIf="projectForm.get('summary')?.hasError('required')">
-            Summary is required
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Members Involved</mat-label>
-          <mat-select formControlName="members" multiple required>
-            <mat-option *ngFor="let user of availableUsers" [value]="user._id">
-              {{user.firstName}} {{user.lastName}}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="projectForm.get('members')?.hasError('required')">
-            At least one member is required
-          </mat-error>
-        </mat-form-field>
-
-        <div class="date-fields">
-          <mat-form-field appearance="outline">
-            <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
-            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-            <mat-datepicker #startPicker></mat-datepicker>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="endPicker" formControlName="endDate" required>
-            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-            <mat-datepicker #endPicker></mat-datepicker>
-          </mat-form-field>
+    <!-- Form Content -->
+    <div *ngIf="!isLoading" class="form-content">
+      <!-- Header Section -->
+      <div class="page-header">
+        <div class="header-content">
+          <div class="title-section">
+            <div class="page-icon">
+              <mat-icon>{{isEditing ? 'edit' : 'add'}}</mat-icon>
+            </div>
+            <div class="title-text">
+              <h1>{{isEditing ? 'Edit Project' : 'Create New Project'}}</h1>
+              <p class="subtitle">{{isEditing ? 'Update project information and settings' : 'Set up a new research project'}}</p>
+            </div>
+          </div>
+          
+          <div class="header-actions">
+            <button mat-stroked-button class="cancel-btn" routerLink="/projects">
+              <mat-icon>close</mat-icon>
+              Cancel
+            </button>
+          </div>
         </div>
+      </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Status</mat-label>
-          <mat-select formControlName="status" required>
-            <mat-option value="ongoing">Ongoing</mat-option>
-            <mat-option value="completed">Completed</mat-option>
-            <mat-option value="pending">Pending</mat-option>
-          </mat-select>
-        </mat-form-field>
+      <!-- Form Section -->
+      <div class="form-section">
+        <div class="form-card">
+          <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+            <!-- Basic Information -->
+            <div class="form-group">
+              <h3 class="group-title">
+                <mat-icon>info</mat-icon>
+                Basic Information
+              </h3>
+              
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Project Title</mat-label>
+                  <input matInput formControlName="title" placeholder="Enter project title" required>
+                  <mat-icon matSuffix>title</mat-icon>
+                  <mat-error *ngIf="projectForm.get('title')?.hasError('required')">
+                    Project title is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Expected Results</mat-label>
-          <textarea matInput formControlName="expectedResults" rows="4"></textarea>
-        </mat-form-field>
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Project Summary</mat-label>
+                  <textarea matInput 
+                           formControlName="summary" 
+                           rows="4" 
+                           placeholder="Describe the project objectives, methodology, and expected outcomes..."
+                           required></textarea>
+                  <mat-icon matSuffix>description</mat-icon>
+                  <mat-error *ngIf="projectForm.get('summary')?.hasError('required')">
+                    Project summary is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
 
-        <div class="form-actions">
-          <button mat-button type="button" routerLink="/projects">Cancel</button>
-          <button mat-raised-button color="primary" type="submit" [disabled]="projectForm.invalid || isLoading">
-            {{isEditing ? 'Update' : 'Create'}} Project
-          </button>
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Expected Results</mat-label>
+                  <textarea matInput 
+                           formControlName="expectedResults" 
+                           rows="3" 
+                           placeholder="Describe the expected outcomes and deliverables..."></textarea>
+                  <mat-icon matSuffix>insights</mat-icon>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Team & Collaboration -->
+            <div class="form-group">
+              <h3 class="group-title">
+                <mat-icon>people</mat-icon>
+                Team & Collaboration
+              </h3>
+              
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Team Members</mat-label>
+                  <mat-select formControlName="members" multiple required>
+                    <mat-option *ngFor="let user of availableUsers" [value]="user._id">
+                      <div class="user-option">
+                        
+                        <div class="user-info">
+                          <span class="user-name">{{user.firstName}} {{user.lastName}}</span>
+                          
+                        </div>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>group</mat-icon>
+                  <mat-error *ngIf="projectForm.get('members')?.hasError('required')">
+                    At least one team member is required
+                  </mat-error>
+                  <mat-hint>Select researchers who will be involved in this project</mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Timeline & Status -->
+            <div class="form-group">
+              <h3 class="group-title">
+                <mat-icon>schedule</mat-icon>
+                Timeline & Status
+              </h3>
+              
+              <div class="form-row two-columns">
+                <mat-form-field appearance="outline">
+                  <mat-label>Start Date</mat-label>
+                  <input matInput [matDatepicker]="startPicker" formControlName="startDate" required>
+                  <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #startPicker></mat-datepicker>
+                  <mat-error *ngIf="projectForm.get('startDate')?.hasError('required')">
+                    Start date is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>End Date</mat-label>
+                  <input matInput [matDatepicker]="endPicker" formControlName="endDate" required>
+                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #endPicker></mat-datepicker>
+                  <mat-error *ngIf="projectForm.get('endDate')?.hasError('required')">
+                    End date is required
+                  </mat-error>
+                  <mat-error *ngIf="projectForm.get('endDate')?.hasError('dateRange')">
+                    End date must be after start date
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Project Status</mat-label>
+                  <mat-select formControlName="status" required>
+                    <mat-option value="pending">
+                      <div class="status-option">
+                        <mat-icon class="status-pending">schedule</mat-icon>
+                        <div>
+                          <span class="status-name">Pending</span>
+                          <span class="status-desc">Project is planned but not yet started</span>
+                        </div>
+                      </div>
+                    </mat-option>
+                    <mat-option value="ongoing">
+                      <div class="status-option">
+                        <mat-icon class="status-ongoing">play_circle</mat-icon>
+                        <div>
+                          <span class="status-name">Ongoing</span>
+                          <span class="status-desc">Project is currently in progress</span>
+                        </div>
+                      </div>
+                    </mat-option>
+                    <mat-option value="completed">
+                      <div class="status-option">
+                        <mat-icon class="status-completed">check_circle</mat-icon>
+                        <div>
+                          <span class="status-name">Completed</span>
+                          <span class="status-desc">Project has been finished</span>
+                        </div>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matSuffix>flag</mat-icon>
+                  <mat-error *ngIf="projectForm.get('status')?.hasError('required')">
+                    Project status is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Project Preview (if editing) -->
+            <div *ngIf="isEditing && projectForm.valid" class="form-group preview-group">
+              <h3 class="group-title">
+                <mat-icon>preview</mat-icon>
+                Project Preview
+              </h3>
+              
+              <div class="project-preview">
+                <div class="preview-header">
+                  <h4>{{projectForm.get('title')?.value}}</h4>
+                  <mat-chip [class]="'status-' + projectForm.get('status')?.value">
+                    {{getStatusDisplayName(projectForm.get('status')?.value)}}
+                  </mat-chip>
+                </div>
+                <p class="preview-summary">{{projectForm.get('summary')?.value}}</p>
+                <div class="preview-meta">
+                  <div class="meta-item">
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{formatDateRange()}}</span>
+                  </div>
+                  <div class="meta-item">
+                    <mat-icon>people</mat-icon>
+                    <span>{{getSelectedMembersCount()}} team members</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <button mat-button type="button" class="cancel-btn" routerLink="/projects">
+                <mat-icon>close</mat-icon>
+                Cancel
+              </button>
+              
+              <button mat-raised-button 
+                      color="primary" 
+                      type="submit" 
+                      class="submit-btn"
+                      [disabled]="projectForm.invalid || isSubmitting">
+                <mat-icon *ngIf="isSubmitting">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!isSubmitting">{{isEditing ? 'save' : 'add'}}</mat-icon>
+                {{isSubmitting ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Project' : 'Create Project')}}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      </div>
+    </div>
+  </div>
 </div>

@@ -89,42 +89,7 @@
           </div>
         </div>
 
-        <!-- Recent Activities Section -->
-        <div class="recent-section">
-          <div class="recent-messages">
-            <div class="section-header">
-              <h2 class="section-title">
-                <mat-icon>message</mat-icon>
-                Recent Contact Messages
-              </h2>
-              <button mat-button color="primary" routerLink="/contacts">
-                View All
-                <mat-icon>arrow_forward</mat-icon>
-              </button>
-            </div>
-            <div class="messages-list">
-              <div *ngFor="let contact of dashboardData.recentContacts" class="message-item">
-                <div class="message-avatar">
-                  <mat-icon>person</mat-icon>
-                </div>
-                <div class="message-content">
-                  <h4>{{contact.subject}}</h4>
-                  <p>From: {{contact.name}}</p>
-                  <span class="message-date">{{contact.createdAt | date:'short'}}</span>
-                </div>
-                <div class="message-status">
-                  <mat-chip [color]="contact.status === 'new' ? 'accent' : 'basic'">
-                    {{contact.status}}
-                  </mat-chip>
-                </div>
-              </div>
-              <div *ngIf="!dashboardData.recentContacts || dashboardData.recentContacts.length === 0" class="empty-state">
-                <mat-icon>inbox</mat-icon>
-                <p>No recent messages</p>
-              </div>
-            </div>
-          </div>
-        </div>
+       
       </ng-container>
 
       <!-- Researcher Dashboard -->

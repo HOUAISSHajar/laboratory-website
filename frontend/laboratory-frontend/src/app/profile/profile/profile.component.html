@@ -1,15 +1,34 @@
-<!-- src/app/profile/profile.component.html -->
-<div class="profile-container">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>My Profile</mat-card-title>
-      </mat-card-header>
-  
-      <mat-card-content>
-        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-  
+<div class="profile-wrapper">
+  <div class="profile-container">
+    
+    <!-- Loading Overlay -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading profile...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="profile-content">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div class="header-content">
+          <div class="title-section">
+            <div class="page-icon">
+              <mat-icon>person</mat-icon>
+            </div>
+            <div class="title-text">
+              <h1>My Profile</h1>
+              <p class="subtitle">Manage your personal information and research details</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Card -->
+      <div class="profile-card">
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-          <div class="form-fields">
+          <div class="form-grid">
+
             <mat-form-field appearance="outline">
               <mat-label>First Name</mat-label>
               <input matInput formControlName="firstName" required>
@@ -17,7 +36,7 @@
                 First name is required
               </mat-error>
             </mat-form-field>
-  
+
             <mat-form-field appearance="outline">
               <mat-label>Last Name</mat-label>
               <input matInput formControlName="lastName" required>
@@ -25,36 +44,40 @@
                 Last name is required
               </mat-error>
             </mat-form-field>
-  
+
             <mat-form-field appearance="outline">
               <mat-label>Email</mat-label>
-              <input matInput formControlName="email">
+             <input matInput formControlName="email" [disabled]="true">
+
             </mat-form-field>
-  
+
             <mat-form-field appearance="outline">
               <mat-label>Department</mat-label>
               <input matInput formControlName="department">
             </mat-form-field>
-  
-            <mat-form-field appearance="outline">
+
+            <mat-form-field appearance="outline" class="full-width">
               <mat-label>Description</mat-label>
-              <textarea matInput formControlName="description" rows="4"></textarea>
+              <textarea matInput formControlName="description" rows="3"></textarea>
             </mat-form-field>
-  
-            <mat-form-field appearance="outline">
+
+            <mat-form-field appearance="outline" class="full-width">
               <mat-label>Research Interests (comma-separated)</mat-label>
               <input matInput formControlName="researchInterests"
                      placeholder="e.g., Machine Learning, Data Science, AI">
             </mat-form-field>
           </div>
-  
+
           <div class="form-actions">
-            <button mat-raised-button color="primary" type="submit"
+            <button mat-raised-button class="save-btn" type="submit"
                     [disabled]="profileForm.invalid || isLoading">
+              <mat-icon>save</mat-icon>
               Save Changes
             </button>
           </div>
         </form>
-      </mat-card-content>
-    </mat-card>
+      </div>
+
+    </div>
   </div>
+</div>

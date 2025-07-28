@@ -63,6 +63,12 @@
           <mat-icon>logout</mat-icon>
           <span>Sign Out</span>
         </button>
+
+        <button mat-menu-item color="primary" routerLink="/contacts">
+                Access website
+                <mat-icon>open_in_new</mat-icon>
+              </button>
+        
       </mat-menu>
     </div>
   </header>
@@ -111,7 +117,7 @@
           <span class="nav-text" *ngIf="!sidebarCollapsed">Activities</span>
         </a>
         
-        <div class="nav-divider" *ngIf="isAdmin && !sidebarCollapsed"></div>
+        
         
         <ng-container *ngIf="isAdmin">
           <a class="nav-item" 
@@ -124,15 +130,7 @@
             <span class="nav-text" *ngIf="!sidebarCollapsed">Users</span>
           </a>
           
-          <a class="nav-item" 
-             routerLink="/contacts" 
-             routerLinkActive="active"
-             [class.active]="isActiveRoute('/contacts')">
-            <div class="nav-icon contacts-icon">
-              <mat-icon>contact_mail</mat-icon>
-            </div>
-            <span class="nav-text" *ngIf="!sidebarCollapsed">Contact Messages</span>
-          </a>
+          
         </ng-container>
         
         <a class="nav-item" 

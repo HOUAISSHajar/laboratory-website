@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../core/services/project.service';
 import { PublicationService } from '../../core/services/publication.service';
@@ -7,7 +6,6 @@ import { ActivityService } from '../../core/services/activity.service';
 @Component({
   selector: 'app-home',
   standalone: false,
-  
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -15,11 +13,6 @@ export class HomeComponent implements OnInit {
   recentProjects: any[] = [];
   recentPublications: any[] = [];
   upcomingEvents: any[] = [];
-  announcements = [
-    { image: 'assets/images/announcement1.jpg', title: 'Announcement 1' },
-    { image: 'assets/images/announcement2.jpg', title: 'Announcement 2' },
-    // Add more announcements
-  ];
 
   constructor(
     private projectService: ProjectService,
@@ -34,20 +27,42 @@ export class HomeComponent implements OnInit {
   }
 
   private loadRecentProjects() {
-    this.projectService.getAllProjects().subscribe(
-      projects => this.recentProjects = projects.slice(0, 3)
-    );
+    this.projectService.getAllProjects().subscribe({
+      next: (projects) => {
+        this.recentProjects = projects.slice(0, 3);
+      },
+      error: (error) => {
+        console.error('Error loading projects:', error);
+        this.recentProjects = [];
+      }
+    });
   }
 
   private loadRecentPublications() {
-    this.publicationService.getAllPublications().subscribe(
-      publications => this.recentPublications = publications.slice(0, 3)
-    );
+    this.publicationService.getAllPublications().subscribe({
+      next: (publications) => {
+        this.recentPublications = publications.slice(0, 3);
+      },
+      error: (error) => {
+        console.error('Error loading publications:', error);
+        this.recentPublications = [];
+      }
+    });
   }
 
   private loadUpcomingEvents() {
-    this.activityService.getAllActivities().subscribe(
-      activities => this.upcomingEvents = activities.slice(0, 3)
-    );
+    this.activityService.getAllActivities().subscribe({
+      next: (activities) => {
+        // Filtrer les événements futurs
+        const now = new Date();
+        this.upcomingEvents = activities
+          .filter((activity: any) => new Date(activity.date) >= now)
+          .slice(0, 3);
+      },
+      error: (error) => {
+        console.error('Error loading activities:', error);
+        this.upcomingEvents = [];
+      }
+    });
   }
 }

@@ -8,6 +8,7 @@ import { PublicLayoutComponent } from './layout/public-layout/public-layout.comp
 import { FormsModule,ReactiveFormsModule } from '@angular/forms'; // Add this for ngModel
 // Material imports
 import { MatToolbarModule } from '@angular/material/toolbar';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,7 +25,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PublicationsListComponent } from './publications/publications-list/publications-list.component';
 import { PublicationDetailComponent } from './publications/publication-detail/publication-detail.component';
 import { MatChipsModule } from '@angular/material/chips';
-
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatListModule,
     MatProgressBarModule,
     MatChipsModule,
+    MatMenuModule,
+    MatDividerModule,
     CarouselModule.forRoot()
   ]
 })

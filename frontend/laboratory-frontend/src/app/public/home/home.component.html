@@ -1,84 +1,137 @@
-
 <div class="home-container">
-    <!-- Hero Section with Carousel -->
-    <section class="hero-section">
-      <carousel [interval]="5000" [showIndicators]="true" [isAnimated]="true">
-        <slide *ngFor="let announcement of announcements">
-          <div class="carousel-slide">
-            <img [src]="announcement.image" [alt]="announcement.title">
-            <div class="carousel-caption">
-              <h2>{{announcement.title}}</h2>
-            </div>
-          </div>
-        </slide>
-      </carousel>
-    </section>
-  
-    <!-- Latest Updates Section -->
-    <section class="updates-section">
-      <div class="container">
-        <!-- Recent Projects -->
-        <div class="section-container">
-          <h2 class="section-title">Recent Projects</h2>
-          <div class="cards-grid">
-            <mat-card *ngFor="let project of recentProjects" class="update-card">
-              <mat-card-header>
-                <mat-card-title>{{project.title}}</mat-card-title>
-                <mat-card-subtitle>Research Project</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content>
-                <p>{{project.summary | slice:0:150}}...</p>
-              </mat-card-content>
-              <mat-card-actions>
-                <button mat-button color="primary">Learn More</button>
-              </mat-card-actions>
-            </mat-card>
-          </div>
-        </div>
-  
-        <!-- Recent Publications -->
-        <div class="section-container">
-          <h2 class="section-title">Latest Publications</h2>
-          <div class="cards-grid">
-            <mat-card *ngFor="let publication of recentPublications" class="update-card">
-              <mat-card-header>
-                <mat-card-title>{{publication.title}}</mat-card-title>
-                <mat-card-subtitle>{{publication.type}} - {{publication.year}}</mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content>
-                <p *ngIf="publication.abstract">{{publication.abstract | slice:0:150}}...</p>
-              </mat-card-content>
-              <mat-card-actions>
-                <button mat-button color="primary" [routerLink]="['/index/publications', publication._id]">Read More</button>
-              </mat-card-actions>
-            </mat-card>
-          </div>
-        </div>
-  
-        <!-- Upcoming Events -->
-        <div class="section-container">
-          <h2 class="section-title">Upcoming Events</h2>
-          <div class="cards-grid">
-            <mat-card *ngFor="let event of upcomingEvents" class="update-card">
-              <mat-card-header>
-                <mat-card-title>{{event.title}}</mat-card-title>
-                <mat-card-subtitle>
-                  {{event.date | date}} - {{event.type}}
-                </mat-card-subtitle>
-              </mat-card-header>
-              <mat-card-content>
-                <p>{{event.description | slice:0:150}}...</p>
-                <p class="event-location">
-                  <mat-icon>location_on</mat-icon>
-                  {{event.location}}
-                </p>
-              </mat-card-content>
-              <mat-card-actions>
-                <button mat-flat-button color="primary" [routerLink]="['/index/activities', event._id]">Event Details</button>
-              </mat-card-actions>
-            </mat-card>
-          </div>
-        </div>
+  <!-- Section Hero Simple -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Welcome to Research Laboratory FSAC</h1>
+      <p>Advancing scientific research and innovation</p>
+      <div class="hero-buttons">
+        <button mat-raised-button color="primary" routerLink="/index/publications">
+          <mat-icon>science</mat-icon>
+          Our Research
+        </button>
+        <button mat-stroked-button color="primary" routerLink="/index/activities">
+          <mat-icon>event</mat-icon>
+          Events
+        </button>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+  <!-- Section Contenu Principal -->
+  <section class="main-content">
+    <div class="container">
+      
+      <!-- Projets Récents -->
+      <div class="section">
+        <h2 class="section-title">
+          <mat-icon>work</mat-icon>
+          Recent Projects
+        </h2>
+        
+        <div class="cards-grid" *ngIf="recentProjects.length > 0; else noProjects">
+          <mat-card *ngFor="let project of recentProjects" class="project-card">
+            <mat-card-content>
+              <div class="card-header">
+                <h3>{{project.title}}</h3>
+                <span class="status-badge" [ngClass]="project.status">
+                  {{project.status}}
+                </span>
+              </div>
+              <p>{{project.summary | slice:0:100}}...</p>
+              <div class="card-info">
+                <span><mat-icon>people</mat-icon> {{project.members?.length || 0}} members</span>
+                <span><mat-icon>schedule</mat-icon> {{project.startDate | date:'MMM yyyy'}}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <ng-template #noProjects>
+          <div class="empty-message">
+            <mat-icon>work_off</mat-icon>
+            <p>No projects available</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Publications Récentes -->
+      <div class="section">
+        <h2 class="section-title">
+          <mat-icon>article</mat-icon>
+          Latest Publications
+        </h2>
+        
+        <div class="cards-grid" *ngIf="recentPublications.length > 0; else noPublications">
+          <mat-card *ngFor="let publication of recentPublications" class="publication-card">
+            <mat-card-content>
+              <div class="card-header">
+                <h3>{{publication.title}}</h3>
+                <span class="year-badge">{{publication.year}}</span>
+              </div>
+              <p class="publication-type">{{publication.type | titlecase}}</p>
+              <p *ngIf="publication.abstract">{{publication.abstract | slice:0:100}}...</p>
+              <div class="card-info">
+                <span><mat-icon>people</mat-icon> {{publication.authors?.length || 0}} authors</span>
+                <span *ngIf="publication.journal">
+                  <mat-icon>library_books</mat-icon> 
+                  {{publication.journal | slice:0:15}}...
+                </span>
+              </div>
+              <button mat-button color="primary" [routerLink]="['/index/publications', publication._id]">
+                Read More
+              </button>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <ng-template #noPublications>
+          <div class="empty-message">
+            <mat-icon>article</mat-icon>
+            <p>No publications available</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Événements à venir -->
+      <div class="section">
+        <h2 class="section-title">
+          <mat-icon>event</mat-icon>
+          Upcoming Events
+        </h2>
+        
+        <div class="events-list" *ngIf="upcomingEvents.length > 0; else noEvents">
+          <mat-card *ngFor="let event of upcomingEvents" class="event-card">
+            <mat-card-content>
+              <div class="event-header">
+                <div class="event-date">
+                  <span class="day">{{event.date | date:'dd'}}</span>
+                  <span class="month">{{event.date | date:'MMM'}}</span>
+                </div>
+                <div class="event-info">
+                  <h3>{{event.title}}</h3>
+                  <p class="event-type">{{event.type | titlecase}}</p>
+                  <p class="event-location">
+                    <mat-icon>place</mat-icon>
+                    {{event.location}}
+                  </p>
+                </div>
+              </div>
+              <p>{{event.description | slice:0:120}}...</p>
+              <button mat-flat-button color="primary" [routerLink]="['/index/activities', event._id]">
+                View Details
+              </button>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <ng-template #noEvents>
+          <div class="empty-message">
+            <mat-icon>event_busy</mat-icon>
+            <p>No upcoming events</p>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+  </section>
+</div>

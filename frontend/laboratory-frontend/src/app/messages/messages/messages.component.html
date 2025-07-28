@@ -1,93 +1,117 @@
-<div class="messages-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Messages</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
-      <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)">
-        <!-- Inbox Tab -->
-        <mat-tab label="Inbox">
-          <ng-container *ngIf="inboxMessages.length > 0; else noInboxMessages">
-            <mat-list>
-              <mat-list-item *ngFor="let message of inboxMessages" 
-               [class.unread]="!message.isRead"
-               (click)="openMessageDialog(message, false)">
-    <mat-icon matListIcon>{{ message.isRead ? 'mail_outline' : 'mail' }}</mat-icon>
-    <div matLine class="message-subject">{{message.subject}}</div>
-    <div matLine class="message-sender">
-        From: {{message.sender.firstName}} {{message.sender.lastName}}
+<div class="messages-page">
+  <div class="header">
+    <div class="title-section">
+      <mat-icon class="header-icon">mail</mat-icon>
+      <h2>My Messages</h2>
+      <p class="subtitle">Manage and explore your messages</p>
     </div>
-    <div matLine class="message-date">
-        {{message.createdAt | date:'medium'}}
-    </div>
-</mat-list-item>
-            </mat-list>
-          </ng-container>
-          <ng-template #noInboxMessages>
-            <div class="no-messages">
-              <mat-icon>inbox</mat-icon>
-              <p>No messages in inbox</p>
+    <button mat-raised-button color="primary" (click)="selectedTabIndex = 1">
+      <mat-icon>add</mat-icon> New Message
+    </button>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-cards">
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon">inbox</mat-icon>
+      <div>
+        <p class="count">{{ inboxMessages.length }}</p>
+        <p class="label">Inbox</p>
+      </div>
+    </mat-card>
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon">send</mat-icon>
+      <div>
+        <p class="count">{{ sentMessages.length }}</p>
+        <p class="label">Sent</p>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Onglets -->
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="tabs">
+    <!-- Inbox -->
+    <mat-tab label="Inbox">
+      <ng-container *ngIf="inboxMessages.length > 0; else noInbox">
+        <div class="messages-list">
+          <mat-card class="message-card"
+            *ngFor="let message of inboxMessages"
+            [class.unread]="!message.isRead"
+            (click)="openMessageDialog(message, false)">
+            <div class="message-header">
+              <mat-icon class="message-icon">{{ message.isRead ? 'mail_outline' : 'mail' }}</mat-icon>
+              <div class="message-info">
+                <h3>{{ message.subject }}</h3>
+                <p>From: {{ message.sender.firstName }} {{ message.sender.lastName }}</p>
+              </div>
+              <span class="date">{{ message.createdAt | date:'medium' }}</span>
             </div>
-          </ng-template>
-        </mat-tab>
+          </mat-card>
+        </div>
+      </ng-container>
+      <ng-template #noInbox>
+        <div class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <p>No messages in inbox</p>
+        </div>
+      </ng-template>
+    </mat-tab>
 
-        <!-- New Message Tab -->
-        <mat-tab label="New Message">
-          <div class="new-message-container">
-            <form [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="message-form">
-              <mat-form-field appearance="outline">
-                <mat-label>To</mat-label>
-                <mat-select formControlName="receiverId">
-                  <mat-option *ngFor="let user of users" [value]="user._id">
-                    {{user.firstName}} {{user.lastName}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+    <!-- New Message -->
+    <mat-tab label="New Message">
+      <div class="new-message">
+        <form [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="message-form">
+          <mat-form-field appearance="outline">
+            <mat-label>To</mat-label>
+            <mat-select formControlName="receiverId">
+              <mat-option *ngFor="let user of users" [value]="user._id">
+                {{ user.firstName }} {{ user.lastName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
-              <mat-form-field appearance="outline">
-                <mat-label>Subject</mat-label>
-                <input matInput formControlName="subject">
-              </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Subject</mat-label>
+            <input matInput formControlName="subject">
+          </mat-form-field>
 
-              <mat-form-field appearance="outline">
-                <mat-label>Message</mat-label>
-                <textarea matInput formControlName="content" rows="4"></textarea>
-              </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Message</mat-label>
+            <textarea matInput formControlName="content" rows="4"></textarea>
+          </mat-form-field>
 
-              <button mat-raised-button color="primary" type="submit"
-                      [disabled]="messageForm.invalid || loading">
-                Send Message
-              </button>
-            </form>
-          </div>
-        </mat-tab>
+          <button mat-raised-button color="primary" type="submit" [disabled]="messageForm.invalid || loading">
+            Send
+          </button>
+        </form>
+      </div>
+    </mat-tab>
 
-        <!-- Sent Tab -->
-        <mat-tab label="Sent">
-          <ng-container *ngIf="sentMessages.length > 0; else noSentMessages">
-            <mat-list>
-              <mat-list-item *ngFor="let message of sentMessages"
-               (click)="openMessageDialog(message, true)">
-                <mat-icon matListIcon>send</mat-icon>
-                <div matLine class="message-subject">{{message.subject}}</div>
-                <div matLine class="message-receiver">
-                    To: {{message.receiver.firstName}} {{message.receiver.lastName}}
-                </div>
-                <div matLine class="message-date">
-                    {{message.createdAt | date:'medium'}}
-                </div>
-            </mat-list-item>
-            </mat-list>
-          </ng-container>
-          <ng-template #noSentMessages>
-            <div class="no-messages">
-              <mat-icon>send</mat-icon>
-              <p>No sent messages</p>
+    <!-- Sent -->
+    <mat-tab label="Sent">
+      <ng-container *ngIf="sentMessages.length > 0; else noSent">
+        <div class="messages-list">
+          <mat-card class="message-card"
+            *ngFor="let message of sentMessages"
+            (click)="openMessageDialog(message, true)">
+            <div class="message-header">
+              <mat-icon class="message-icon">send</mat-icon>
+              <div class="message-info">
+                <h3>{{ message.subject }}</h3>
+                <p>To: {{ message.receiver.firstName }} {{ message.receiver.lastName }}</p>
+              </div>
+              <span class="date">{{ message.createdAt | date:'medium' }}</span>
             </div>
-          </ng-template>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-card-content>
-  </mat-card>
+          </mat-card>
+        </div>
+      </ng-container>
+      <ng-template #noSent>
+        <div class="empty-state">
+          <mat-icon>send</mat-icon>
+          <p>No sent messages</p>
+        </div>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 </div>
+  

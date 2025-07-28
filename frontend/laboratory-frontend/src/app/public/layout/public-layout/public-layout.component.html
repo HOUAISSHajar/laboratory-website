@@ -1,41 +1,106 @@
-<!-- src/app/public/layout/public-layout.component.html -->
 <div class="public-layout">
-    <mat-toolbar color="primary" class="header">
-      <div class="container">
-        <div class="logo">
-          <img src="assets/images/logo.png" alt="Laboratory Logo" class="logo-img">
-          <span>RESEARCH LABORATORY FSAC</span>
+  <mat-toolbar color="primary" class="modern-header">
+    <div class="header-container">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <img src="assets/images/logo.jpg" alt="Laboratory Logo" class="logo-img">
+        <div class="logo-text">
+          <span class="lab-name">RESEARCH LABORATORY</span>
+          <span class="lab-subtitle">FSAC</span>
         </div>
-  
-        <nav class="navigation">
-          <a mat-button routerLink="/index" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      </div>
+
+      <!-- Navigation Desktop -->
+      <nav class="desktop-nav">
+        <a mat-button 
+           routerLink="/index" 
+           routerLinkActive="active" 
+           [routerLinkActiveOptions]="{exact: true}"
+           class="nav-link">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+        
+        <a mat-button 
+           routerLink="/index/activities" 
+           routerLinkActive="active"
+           class="nav-link">
+          <mat-icon>event</mat-icon>
+          <span>Activities</span>
+        </a>
+        
+        <a mat-button 
+           routerLink="/index/publications" 
+           routerLinkActive="active"
+           class="nav-link">
+          <mat-icon>article</mat-icon>
+          <span>Publications</span>
+        </a>
+        
+        <button mat-raised-button color="accent" routerLink="/login" class="login-btn">
+          <mat-icon>login</mat-icon>
+          <span>Login</span>
+        </button>
+      </nav>
+
+      <!-- Menu Mobile -->
+      <div class="mobile-nav">
+        <button mat-icon-button [matMenuTriggerFor]="mobileMenu" class="mobile-menu-btn">
+          <mat-icon>menu</mat-icon>
+        </button>
+        
+        <mat-menu #mobileMenu="matMenu" class="mobile-menu">
+          <a mat-menu-item routerLink="/index">
             <mat-icon>home</mat-icon>
-            Home
+            <span>Home</span>
           </a>
-          <a mat-button routerLink="/index/activities" routerLinkActive="active">
+          <a mat-menu-item routerLink="/index/activities">
             <mat-icon>event</mat-icon>
-            Activities
+            <span>Activities</span>
           </a>
-          <a mat-button routerLink="/index/publications" routerLinkActive="active">
+          <a mat-menu-item routerLink="/index/publications">
             <mat-icon>article</mat-icon>
-            Publications
+            <span>Publications</span>
           </a>
-          <!-- Add other public navigation links here -->
-          <button mat-raised-button color="accent" routerLink="/login">
+          <mat-divider></mat-divider>
+          <a mat-menu-item routerLink="/login">
             <mat-icon>login</mat-icon>
-            Login
-          </button>
-        </nav>
+            <span>Login</span>
+          </a>
+        </mat-menu>
       </div>
-    </mat-toolbar>
-  
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-  
-    <footer>
-      <div class="container">
-        <p>&copy; 2024 Laboratory Website. All rights reserved.</p>
+    </div>
+  </mat-toolbar>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="modern-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Research Laboratory FSAC</h4>
+          <p>Advancing scientific research and innovation</p>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <a routerLink="/index">Home</a>
+          <a routerLink="/index/activities">Activities</a>
+          <a routerLink="/index/publications">Publications</a>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p>Faculty of Sciences</p>
+          <p>Mohammed V University</p>
+        </div>
       </div>
-    </footer>
-  </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 Research Laboratory FSAC. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</div>
