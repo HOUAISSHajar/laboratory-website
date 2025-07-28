@@ -16,12 +16,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatListModule } from '@angular/material/list';
-
+import { MatListModule } from '@angular/material/list'; 
+import { MatTooltipModule } from '@angular/material/tooltip'; 
+import { MatDividerModule } from '@angular/material/divider'; 
 @NgModule({
   declarations: [
     PublicationListComponent,
@@ -39,11 +41,14 @@ import { MatListModule } from '@angular/material/list';
     MatMenuModule,
     MatChipsModule,
     MatProgressBarModule,
+    MatProgressSpinnerModule,
     MatSnackBarModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatListModule
+    MatListModule,
+    MatTooltipModule, 
+    MatDividerModule 
   ]
 })
 export class PublicationsModule { }

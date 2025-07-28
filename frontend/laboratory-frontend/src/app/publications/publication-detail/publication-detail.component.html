@@ -1,82 +1,190 @@
-<div class="publication-detail-container">
-  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+<div class="publication-detail-wrapper">
+  <div class="publication-detail-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading publication details...</p>
+    </div>
 
-  <div *ngIf="publication" class="publication-content">
-    <div class="header">
-      <div class="title-section">
-        <h1>{{publication.title}}</h1>
-        <mat-chip-set>
-          <mat-chip color="accent" selected>
-            {{getTypeDisplayName(publication.type)}}
-          </mat-chip>
-          <mat-chip color="primary" selected>
-            {{publication.year}}
-          </mat-chip>
-        </mat-chip-set>
+    <!-- Publication Content -->
+    <div *ngIf="publication && !isLoading" class="publication-content">
+      <!-- Header Section -->
+      <div class="detail-header">
+        <div class="header-content">
+          <div class="back-section">
+            <button mat-icon-button class="back-btn" routerLink="/publications">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <div class="breadcrumb">
+              <span class="breadcrumb-item">Publications</span>
+              <mat-icon>chevron_right</mat-icon>
+              <span class="breadcrumb-current">Details</span>
+            </div>
+          </div>
+          
+          
+        </div>
       </div>
-      
-      <button mat-raised-button color="primary" routerLink="/publications">
-        <mat-icon>arrow_back</mat-icon>
-        Back to Publications
-      </button>
-    </div>
 
-    <div class="info-grid">
-      <mat-card class="authors-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>people</mat-icon>
-          <mat-card-title>Authors</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-chip-set>
-            <mat-chip *ngFor="let author of publication.authors" class="author-chip">
-              <mat-icon>person</mat-icon>
-              {{author.firstName}} {{author.lastName}}
+      <!-- Publication Info Card -->
+      <div class="publication-info-card">
+        <div class="card-header">
+          <div class="publication-meta">
+            <mat-chip [class]="'type-' + publication.type" class="type-chip">
+              {{getTypeDisplayName(publication.type)}}
             </mat-chip>
-          </mat-chip-set>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="publication-info-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>info</mat-icon>
-          <mat-card-title>Publication Info</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="info-item">
-            <strong>Type:</strong>
-            <span>{{getTypeDisplayName(publication.type)}}</span>
+            <div class="year-badge">
+              <mat-icon>calendar_today</mat-icon>
+              <span>{{publication.year}}</span>
+            </div>
           </div>
-          <div class="info-item">
-            <strong>Year:</strong>
-            <span>{{publication.year}}</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
 
-      <mat-card class="keywords-card" *ngIf="publication.keywords && publication.keywords.length > 0">
-        <mat-card-header>
-          <mat-icon mat-card-avatar>label</mat-icon>
-          <mat-card-title>Keywords</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-chip-set>
-            <mat-chip *ngFor="let keyword of publication.keywords" class="keyword-chip">
-              {{keyword}}
-            </mat-chip>
-          </mat-chip-set>
-        </mat-card-content>
-      </mat-card>
+        <div class="card-content">
+          <h1 class="publication-title">{{publication.title}}</h1>
+          
+          <div class="publication-stats">
+            <div class="stat-item">
+              <mat-icon>people</mat-icon>
+              <span>{{publication.authors?.length || 0}} Authors</span>
+            </div>
+            <div class="stat-item" *ngIf="publication.keywords && publication.keywords.length > 0">
+              <mat-icon>label</mat-icon>
+              <span>{{publication.keywords.length}} Keywords</span>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="content-grid">
+        <!-- Authors Section -->
+        <div class="info-card authors-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>people</mat-icon>
+              </div>
+              <h3>Authors</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="authors-grid">
+              <div *ngFor="let author of publication.authors" class="author-item">
+                <div class="author-avatar">
+                  <span>{{getAuthorInitials(author)}}</span>
+                </div>
+                <div class="author-info">
+                  <h4>{{author.firstName}} {{author.lastName}}</h4>
+                  <p>{{author.email}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Publication Details -->
+        <div class="info-card details-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>info</mat-icon>
+              </div>
+              <h3>Publication Details</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="details-list">
+              <div class="detail-item">
+                <div class="detail-label">
+                  <mat-icon>category</mat-icon>
+                  <span>Type</span>
+                </div>
+                <div class="detail-value">
+                  <mat-chip [class]="'type-' + publication.type">
+                    {{getTypeDisplayName(publication.type)}}
+                  </mat-chip>
+                </div>
+              </div>
+              
+              <div class="detail-item">
+                <div class="detail-label">
+                  <mat-icon>calendar_today</mat-icon>
+                  <span>Publication Year</span>
+                </div>
+                <div class="detail-value">
+                  <span class="year-value">{{publication.year}}</span>
+                </div>
+              </div>
+              
+              <div class="detail-item" *ngIf="publication.journal">
+                <div class="detail-label">
+                  <mat-icon>book</mat-icon>
+                  <span>Journal</span>
+                </div>
+                <div class="detail-value">
+                  <span>{{publication.journal}}</span>
+                </div>
+              </div>
+              
+              <div class="detail-item" *ngIf="publication.doi">
+                <div class="detail-label">
+                  <mat-icon>link</mat-icon>
+                  <span>DOI</span>
+                </div>
+                <div class="detail-value">
+                  <a href="https://doi.org/{{publication.doi}}" target="_blank" class="doi-link">
+                    {{publication.doi}}
+                    <mat-icon>open_in_new</mat-icon>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Keywords Section -->
+        <div class="info-card keywords-card" *ngIf="publication.keywords && publication.keywords.length > 0">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>label</mat-icon>
+              </div>
+              <h3>Keywords</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="keywords-list">
+              <mat-chip *ngFor="let keyword of publication.keywords" class="keyword-chip">
+                {{keyword}}
+              </mat-chip>
+            </div>
+          </div>
+        </div>
+
+
+
+      <!-- Abstract Section -->
+      <div class="abstract-section" *ngIf="publication.abstract">
+        <div class="abstract-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <mat-icon>article</mat-icon>
+              </div>
+              <h3>Abstract</h3>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="abstract-content">
+              <p>{{publication.abstract}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      </div>
     </div>
-
-    <mat-card class="abstract-card" *ngIf="publication.abstract">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>article</mat-icon>
-        <mat-card-title>Abstract</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>{{publication.abstract}}</p>
-      </mat-card-content>
-    </mat-card>
   </div>
 </div>

@@ -6,7 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login/login.component';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
 import { DashboardComponent } from './dashboard/dashboard/dashboard.component';
 import { ProjectsModule } from './projects/projects.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -51,6 +52,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatListModule,
     MatIconModule,
     MatMenuModule,
+    MatTooltipModule,
+    MatBadgeModule,
     MatDividerModule,
     MatProgressBarModule,
     MatGridListModule,

@@ -17,6 +17,7 @@ export class PublicationListComponent implements OnInit {
   canCreatePublication = false;
   displayedColumns: string[] = ['title', 'type', 'year', 'authors', 'actions'];
   pageTitle: string = '';
+  viewMode: 'card' | 'list' = 'list';
   
   constructor(
     private publicationService: PublicationService,
@@ -87,5 +88,27 @@ export class PublicationListComponent implements OnInit {
       'conference_paper': 'Conference Paper'
     };
     return typeMap[type] || type;
+  }
+
+  
+
+  getTypeCount(type: string): number {
+    return this.publications.filter(pub => pub.type === type).length;
+  }
+
+  getRecentCount(): number {
+    const currentYear = new Date().getFullYear();
+    return this.publications.filter(pub => pub.year === currentYear).length;
+  }
+
+  // Filter and search methods (to be implemented later)
+  openFilterDialog() {
+    // Implementation for filter dialog
+    console.log('Opening filter dialog...');
+  }
+
+  openSearchDialog() {
+    // Implementation for search dialog
+    console.log('Opening search dialog...');
   }
 }
