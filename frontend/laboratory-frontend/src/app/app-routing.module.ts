@@ -75,7 +75,10 @@ const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
       {
         path: 'projects',
         loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)
@@ -101,12 +104,10 @@ const routes: Routes = [
         loadChildren: () => import('./messages/messages.module').then(m => m.MessagesModule)
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-     
     ]
   },
   { path: '**', redirectTo: 'index' }
 ];
-
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]

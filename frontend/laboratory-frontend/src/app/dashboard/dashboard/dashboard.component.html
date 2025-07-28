@@ -1,164 +1,308 @@
-<div class="dashboard-container">
-    <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
-  
-    <div *ngIf="error" class="error-message">
-      <mat-error>{{error}}</mat-error>
+<div class="dashboard-wrapper">
+  <div class="dashboard-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading dashboard...</p>
     </div>
-  
-    <!-- Administrator Dashboard -->
-    <ng-container *ngIf="userRole === 'administrator'">
-      <h1>Admin Dashboard</h1>
-      
-      <div class="stats-grid">
-        <mat-card class="stat-card">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>people</mat-icon>
-            <mat-card-title>Total Users</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <h2>{{dashboardData.counts?.users || 0}}</h2>
-          </mat-card-content>
-        </mat-card>
-  
-        <mat-card class="stat-card">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>work</mat-icon>
-            <mat-card-title>Projects</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <h2>{{dashboardData.counts?.projects || 0}}</h2>
-          </mat-card-content>
-        </mat-card>
-  
-        <mat-card class="stat-card">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>library_books</mat-icon>
-            <mat-card-title>Publications</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <h2>{{dashboardData.counts?.publications || 0}}</h2>
-          </mat-card-content>
-        </mat-card>
-  
-        <mat-card class="stat-card">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>mail</mat-icon>
-            <mat-card-title>New Messages</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <h2>{{dashboardData.counts?.newContacts || 0}}</h2>
-          </mat-card-content>
-        </mat-card>
-      </div>
-  
-      <div class="recent-activities">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Recent Contact Messages</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list>
-              <mat-list-item *ngFor="let contact of dashboardData.recentContacts">
-                <mat-icon matListItemIcon>mail</mat-icon>
-                <div matListItemTitle>{{contact.subject}}</div>
-                <div matListItemLine>From: {{contact.name}}</div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </ng-container>
-  
-    <!-- Researcher Dashboard -->
-    <ng-container *ngIf="userRole === 'faculty_researcher' || userRole === 'phd_researcher'">
-      <h1>My Dashboard</h1>
-      
-      <div class="researcher-content">
-        <mat-card class="projects-card">
-          <mat-card-header>
-            <mat-card-title>My Projects</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list>
-              <mat-list-item *ngFor="let project of dashboardData.myProjects">
-                <mat-icon matListItemIcon>work</mat-icon>
-                <div matListItemTitle>{{project.title}}</div>
-                <div matListItemLine>Status: {{project.status}}</div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
-  
-        <mat-card class="publications-card">
-          <mat-card-header>
-            <mat-card-title>My Publications</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list>
-              <mat-list-item *ngFor="let pub of dashboardData.myPublications">
-                <mat-icon matListItemIcon>article</mat-icon>
-                <div matListItemTitle>{{pub.title}}</div>
-                <div matListItemLine>{{pub.year}}</div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
 
-        <mat-card class="activities-card">
-          <mat-card-header>
-            <mat-card-title>My Activities</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list>
-              <mat-list-item *ngFor="let activity of dashboardData.myActivities">
-                <mat-icon matListItemIcon>event</mat-icon>
-                <div matListItemTitle>{{activity.title}}</div>
-                <div matListItemLine>
-                  {{activity.date | date}} - {{activity.type}}
-                  
+    <!-- Error State -->
+    <div *ngIf="error" class="error-container">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h3>Something went wrong</h3>
+      <p>{{error}}</p>
+      <button mat-raised-button color="primary" (click)="loadDashboardData()">
+        <mat-icon>refresh</mat-icon>
+        Try Again
+      </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div *ngIf="!isLoading && !error" class="dashboard-content">
+      <!-- Welcome Header -->
+      <div class="welcome-header">
+        <div class="welcome-text">
+          <h1>Welcome back, <span class="user-name">{{dashboardData.userInfo?.firstName}}</span>!</h1>
+          <p class="welcome-subtitle">Here's what's happening in your laboratory today.</p>
+        </div>
+        <div class="date-info">
+          <div class="current-date">
+            <mat-icon>today</mat-icon>
+            <span>{{getCurrentDate()}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Administrator Dashboard -->
+      <ng-container *ngIf="userRole === 'administrator'">
+        <!-- Stats Cards -->
+        <div class="stats-section">
+          <h2 class="section-title">
+            <mat-icon>analytics</mat-icon>
+            Laboratory Overview
+          </h2>
+          <div class="stats-grid">
+            <div class="stat-card users">
+              <div class="stat-icon">
+                <mat-icon>people</mat-icon>
+              </div>
+              <div class="stat-content">
+                <h3>{{dashboardData.counts?.users || 0}}</h3>
+                <p>Total Users</p>
+                <span class="stat-trend positive">+2 this month</span>
+              </div>
+            </div>
+
+            <div class="stat-card projects">
+              <div class="stat-icon">
+                <mat-icon>work</mat-icon>
+              </div>
+              <div class="stat-content">
+                <h3>{{dashboardData.counts?.projects || 0}}</h3>
+                <p>Active Projects</p>
+                <span class="stat-trend positive">+1 this week</span>
+              </div>
+            </div>
+
+            <div class="stat-card publications">
+              <div class="stat-icon">
+                <mat-icon>library_books</mat-icon>
+              </div>
+              <div class="stat-content">
+                <h3>{{dashboardData.counts?.publications || 0}}</h3>
+                <p>Publications</p>
+                <span class="stat-trend neutral">Same as last month</span>
+              </div>
+            </div>
+
+            <div class="stat-card messages">
+              <div class="stat-icon">
+                <mat-icon>mail</mat-icon>
+              </div>
+              <div class="stat-content">
+                <h3>{{dashboardData.counts?.newContacts || 0}}</h3>
+                <p>New Messages</p>
+                <span class="stat-trend attention" *ngIf="dashboardData.counts?.newContacts > 0">Needs attention</span>
+                <span class="stat-trend neutral" *ngIf="dashboardData.counts?.newContacts === 0">All clear</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities Section -->
+        <div class="recent-section">
+          <div class="recent-messages">
+            <div class="section-header">
+              <h2 class="section-title">
+                <mat-icon>message</mat-icon>
+                Recent Contact Messages
+              </h2>
+              <button mat-button color="primary" routerLink="/contacts">
+                View All
+                <mat-icon>arrow_forward</mat-icon>
+              </button>
+            </div>
+            <div class="messages-list">
+              <div *ngFor="let contact of dashboardData.recentContacts" class="message-item">
+                <div class="message-avatar">
+                  <mat-icon>person</mat-icon>
                 </div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </ng-container>
-  
-    <!-- Associated Member Dashboard -->
-    <ng-container *ngIf="userRole === 'associated_member'">
-      <h1>Laboratory Dashboard</h1>
-      
-      <div class="member-content">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Recent Publications</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list>
-              <mat-list-item *ngFor="let pub of dashboardData.recentPublications">
-                <mat-icon matListItemIcon>article</mat-icon>
-                <div matListItemTitle>{{pub.title}}</div>
-                <div matListItemLine>{{pub.year}}</div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
-  
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Upcoming Activities</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list>
-              <mat-list-item *ngFor="let activity of dashboardData.upcomingActivities">
-                <mat-icon matListItemIcon>event</mat-icon>
-                <div matListItemTitle>{{activity.title}}</div>
-                <div matListItemLine>{{activity.date | date}}</div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
-      </div>
-    </ng-container>
-  
+                <div class="message-content">
+                  <h4>{{contact.subject}}</h4>
+                  <p>From: {{contact.name}}</p>
+                  <span class="message-date">{{contact.createdAt | date:'short'}}</span>
+                </div>
+                <div class="message-status">
+                  <mat-chip [color]="contact.status === 'new' ? 'accent' : 'basic'">
+                    {{contact.status}}
+                  </mat-chip>
+                </div>
+              </div>
+              <div *ngIf="!dashboardData.recentContacts || dashboardData.recentContacts.length === 0" class="empty-state">
+                <mat-icon>inbox</mat-icon>
+                <p>No recent messages</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Researcher Dashboard -->
+      <ng-container *ngIf="userRole === 'faculty_researcher' || userRole === 'phd_researcher'">
+        <div class="researcher-content">
+          <!-- My Work Section -->
+          <div class="work-section">
+            <div class="work-grid">
+              <!-- Projects Card -->
+              <div class="work-card projects-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <mat-icon>work</mat-icon>
+                    <h3>My Projects</h3>
+                  </div>
+                  <button mat-icon-button routerLink="/projects">
+                    <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="project-stats">
+                    <div class="stat-item">
+                      <span class="stat-number">{{dashboardData.myProjects?.length || 0}}</span>
+                      <span class="stat-label">Total Projects</span>
+                    </div>
+                  </div>
+                  <div class="items-list">
+                    <div *ngFor="let project of dashboardData.myProjects?.slice(0, 3)" class="list-item">
+                      <div class="item-icon">
+                        <mat-icon>folder</mat-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>{{project.title}}</h4>
+                        <p>Status: <span class="status-badge" [class]="'status-' + project.status">{{project.status}}</span></p>
+                      </div>
+                    </div>
+                    <div *ngIf="!dashboardData.myProjects || dashboardData.myProjects.length === 0" class="empty-state-small">
+                      <mat-icon>add_circle_outline</mat-icon>
+                      <p>No projects yet</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Publications Card -->
+              <div class="work-card publications-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <mat-icon>library_books</mat-icon>
+                    <h3>My Publications</h3>
+                  </div>
+                  <button mat-icon-button routerLink="/publications">
+                    <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="publication-stats">
+                    <div class="stat-item">
+                      <span class="stat-number">{{dashboardData.myPublications?.length || 0}}</span>
+                      <span class="stat-label">Publications</span>
+                    </div>
+                  </div>
+                  <div class="items-list">
+                    <div *ngFor="let pub of dashboardData.myPublications?.slice(0, 3)" class="list-item">
+                      <div class="item-icon">
+                        <mat-icon>article</mat-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>{{pub.title}}</h4>
+                        <p>Year: {{pub.year}}</p>
+                      </div>
+                    </div>
+                    <div *ngIf="!dashboardData.myPublications || dashboardData.myPublications.length === 0" class="empty-state-small">
+                      <mat-icon>add_circle_outline</mat-icon>
+                      <p>No publications yet</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activities Card -->
+              <div class="work-card activities-card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <mat-icon>event</mat-icon>
+                    <h3>My Activities</h3>
+                  </div>
+                  <button mat-icon-button routerLink="/activities">
+                    <mat-icon>arrow_forward</mat-icon>
+                  </button>
+                </div>
+                <div class="card-content">
+                  <div class="activity-stats">
+                    <div class="stat-item">
+                      <span class="stat-number">{{dashboardData.myActivities?.length || 0}}</span>
+                      <span class="stat-label">Activities</span>
+                    </div>
+                  </div>
+                  <div class="items-list">
+                    <div *ngFor="let activity of dashboardData.myActivities?.slice(0, 3)" class="list-item">
+                      <div class="item-icon">
+                        <mat-icon>event_note</mat-icon>
+                      </div>
+                      <div class="item-content">
+                        <h4>{{activity.title}}</h4>
+                        <p>{{activity.date | date:'mediumDate'}} - {{activity.type}}</p>
+                      </div>
+                    </div>
+                    <div *ngIf="!dashboardData.myActivities || dashboardData.myActivities.length === 0" class="empty-state-small">
+                      <mat-icon>add_circle_outline</mat-icon>
+                      <p>No activities yet</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Associated Member Dashboard -->
+      <ng-container *ngIf="userRole === 'associated_member'">
+        <div class="member-content">
+          <div class="member-grid">
+            <!-- Recent Publications -->
+            <div class="member-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <mat-icon>library_books</mat-icon>
+                  <h3>Recent Publications</h3>
+                </div>
+                <button mat-icon-button routerLink="/publications">
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
+              <div class="card-content">
+                <div class="items-list">
+                  <div *ngFor="let pub of dashboardData.recentPublications" class="list-item">
+                    <div class="item-icon">
+                      <mat-icon>article</mat-icon>
+                    </div>
+                    <div class="item-content">
+                      <h4>{{pub.title}}</h4>
+                      <p>{{pub.year}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Activities -->
+            <div class="member-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <mat-icon>event</mat-icon>
+                  <h3>Upcoming Activities</h3>
+                </div>
+                <button mat-icon-button routerLink="/activities">
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
+              <div class="card-content">
+                <div class="items-list">
+                  <div *ngFor="let activity of dashboardData.upcomingActivities" class="list-item">
+                    <div class="item-icon">
+                      <mat-icon>event_note</mat-icon>
+                    </div>
+                    <div class="item-content">
+                      <h4>{{activity.title}}</h4>
+                      <p>{{activity.date | date:'mediumDate'}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
   </div>
+</div>

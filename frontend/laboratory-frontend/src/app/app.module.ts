@@ -32,8 +32,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   declarations: [
     AppComponent,
     LoginComponent,
-    MainLayoutComponent,
-    DashboardComponent
+    MainLayoutComponent
+    
 
   ],
   imports: [
