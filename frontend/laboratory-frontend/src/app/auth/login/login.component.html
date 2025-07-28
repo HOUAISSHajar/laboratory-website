@@ -1,34 +1,85 @@
-<div class="login-container">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Login</mat-card-title>
-      </mat-card-header>
-  
-      <mat-card-content>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" formControlName="email" required>
-            <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+<div class="login-wrapper">
+  <div class="login-container">
+    <!-- Left Side - Illustration -->
+    <div class="login-left">
+      <div class="illustration-container">
+        <!-- Remplacez cette div par votre image -->
+        <img src="assets/images/login-illustration.png" alt="Laboratory Login" class="login-illustration">
+        <!-- Pattern overlay -->
+        <div class="pattern-overlay"></div>
+      </div>
+    </div>
+
+    <!-- Right Side - Login Form -->
+    <div class="login-right">
+      <div class="login-form-container">
+        <!-- Header -->
+        <div class="login-header">
+          <h1 class="brand-name">Research Laboratory FSAC</h1>
+          
+        </div>
+
+        <!-- Login Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <!-- Email Field -->
+          <div class="form-group">
+            <label for="email" class="form-label">EMAIL ID</label>
+            <input 
+              type="email" 
+              id="email"
+              formControlName="email" 
+              class="form-input"
+              placeholder="Enter your email"
+              required>
+            <div *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched" 
+                 class="error-message">
               Email is required
-            </mat-error>
-            <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+            </div>
+            <div *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched" 
+                 class="error-message">
               Please enter a valid email address
-            </mat-error>
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Password</mat-label>
-            <input matInput type="password" formControlName="password" required>
-            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            </div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password" class="form-label">PASSWORD</label>
+            <div class="password-input-container">
+              <input 
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password" 
+                class="form-input"
+                placeholder="Enter your password"
+                required>
+              <button 
+                type="button" 
+                class="password-toggle"
+                (click)="togglePasswordVisibility()">
+                <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </div>
+            <div *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched" 
+                 class="error-message">
               Password is required
-            </mat-error>
-          </mat-form-field>
-  
-          <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || loading">
-            {{ loading ? 'Logging in...' : 'Login' }}
+            </div>
+          </div>
+
+          
+
+          <!-- Login Button -->
+          <button 
+            type="submit" 
+            class="login-btn"
+            [disabled]="loginForm.invalid || loading">
+            <span *ngIf="!loading">Log In</span>
+            <span *ngIf="loading" class="loading-text">
+              <mat-spinner diameter="20"></mat-spinner>
+              Logging in...
+            </span>
           </button>
         </form>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
+</div>
