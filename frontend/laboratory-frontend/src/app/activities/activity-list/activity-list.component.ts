@@ -1,33 +1,22 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-activity-list',
-//   standalone: false,
-  
-//   templateUrl: './activity-list.component.html',
-//   styleUrl: './activity-list.component.scss'
-// })
-// export class ActivityListComponent {
-
-// }
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivityService } from '../../core/services/activity.service';
 import { AuthService } from '../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-activity-list',
   standalone: false,
-  
   templateUrl: './activity-list.component.html',
   styleUrl: './activity-list.component.scss'
 })
 export class ActivityListComponent implements OnInit {
+  userRole: string = '';
   activities: any[] = [];
   isLoading = true;
   canCreateActivity = false;
-  userRole: string = '';
-  displayedColumns: string[] = ['title', 'type', 'date', 'location', 'status', 'actions'];
+  displayedColumns: string[] = ['title', 'type', 'date', 'location', 'organizers', 'status', 'actions'];
+  pageTitle: string = '';
   
   constructor(
     private activityService: ActivityService,
@@ -40,37 +29,28 @@ export class ActivityListComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
     this.userRole = currentUser?.role || '';
     this.canCreateActivity = ['administrator', 'faculty_researcher', 'phd_researcher'].includes(this.userRole);
+    
+    // Set title based on role
+    if (['faculty_researcher', 'phd_researcher'].includes(this.userRole)) {
+      this.pageTitle = 'My Activities';
+    } else {
+      this.pageTitle = 'All Activities';
+    }
+    
     this.loadActivities();
   }
 
   loadActivities() {
-    this.isLoading = true;
-    
-    // For faculty_researcher and phd_researcher, load only their activities
-    if (['faculty_researcher', 'phd_researcher'].includes(this.userRole)) {
-      this.activityService.getUserActivities().subscribe({
-        next: (data) => {
-          this.activities = data;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.snackBar.open('Error loading activities', 'Close', { duration: 3000 });
-          this.isLoading = false;
-        }
-      });
-    } else {
-      // For administrator and associated_member, load all activities
-      this.activityService.getAllActivities().subscribe({
-        next: (data) => {
-          this.activities = data;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.snackBar.open('Error loading activities', 'Close', { duration: 3000 });
-          this.isLoading = false;
-        }
-      });
-    }
+    this.activityService.getAllActivities().subscribe({
+      next: (data) => {
+        this.activities = data;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.snackBar.open('Error loading activities', 'Close', { duration: 3000 });
+        this.isLoading = false;
+      }
+    });
   }
 
   createNew() {
@@ -83,6 +63,19 @@ export class ActivityListComponent implements OnInit {
 
   editActivity(id: string) {
     this.router.navigate(['/activities/edit', id]);
+  }
+
+  toggleArchiveStatus(id: string) {
+    this.activityService.toggleArchiveStatus(id).subscribe({
+      next: (updatedActivity) => {
+        const statusText = updatedActivity.isArchived ? 'archived' : 'unarchived';
+        this.snackBar.open(`Activity ${statusText} successfully`, 'Close', { duration: 3000 });
+        this.loadActivities();
+      },
+      error: (error) => {
+        this.snackBar.open('Error updating activity status', 'Close', { duration: 3000 });
+      }
+    });
   }
 
   deleteActivity(id: string) {
@@ -99,15 +92,22 @@ export class ActivityListComponent implements OnInit {
     }
   }
 
-  toggleArchive(id: string, isArchived: boolean) {
-    this.activityService.toggleArchive(id).subscribe({
-      next: () => {
-        this.snackBar.open(`Activity ${isArchived ? 'unarchived' : 'archived'} successfully`, 'Close', { duration: 3000 });
-        this.loadActivities();
-      },
-      error: (error) => {
-        this.snackBar.open('Error updating activity status', 'Close', { duration: 3000 });
-      }
-    });
+  getTypeDisplayName(type: string): string {
+    const typeMap: { [key: string]: string } = {
+      'conference': 'Conference',
+      'seminar': 'Seminar',
+      'workshop': 'Workshop',
+      'training': 'Training',
+      'research_mission': 'Research Mission'
+    };
+    return typeMap[type] || type;
+  }
+
+  getStatusDisplayName(isArchived: boolean): string {
+    return isArchived ? 'Archived' : 'Active';
+  }
+
+  getStatusColor(isArchived: boolean): string {
+    return isArchived ? 'warn' : 'primary';
   }
 }

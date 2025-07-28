@@ -1,0 +1,102 @@
+.activity-detail-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .activity-content {
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .title-section {
+        h1 {
+          margin: 0 0 8px 0;
+          font-size: 2em;
+          color: #333;
+        }
+      }
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+
+      mat-card {
+        height: 100%;
+
+        mat-card-header {
+          margin-bottom: 16px;
+
+          mat-icon {
+            color: #1976d2;
+          }
+
+          mat-card-title {
+            font-size: 1.2em;
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      .activity-info-card {
+        .info-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+          border-bottom: 1px solid #eee;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          strong {
+            color: #666;
+          }
+        }
+      }
+
+      .organizers-card, .participants-card {
+        mat-chip-set {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+
+          .organizer-chip {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+
+            mat-icon {
+              margin-right: 4px;
+              font-size: 18px;
+            }
+          }
+
+          .participant-chip {
+            background-color: #fff3e0;
+            color: #f57c00;
+
+            mat-icon {
+              margin-right: 4px;
+              font-size: 18px;
+            }
+          }
+        }
+      }
+    }
+
+    .description-card {
+      margin-top: 24px;
+
+      p {
+        text-align: justify;
+        line-height: 1.8;
+        font-size: 16px;
+      }
+    }
+  }
+}

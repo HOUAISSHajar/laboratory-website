@@ -1,1 +1,93 @@
-<p>activity-detail works!</p>
+<div class="activity-detail-container">
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+  <div *ngIf="activity" class="activity-content">
+    <div class="header">
+      <div class="title-section">
+        <h1>{{activity.title}}</h1>
+        <mat-chip-set>
+          <mat-chip color="accent" selected>
+            {{getTypeDisplayName(activity.type)}}
+          </mat-chip>
+          <mat-chip [color]="getStatusColor(activity.isArchived)" selected>
+            {{getStatusDisplayName(activity.isArchived)}}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+      
+      <button mat-raised-button color="primary" routerLink="/activities">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Activities
+      </button>
+    </div>
+
+    <div class="info-grid">
+      <mat-card class="activity-info-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>info</mat-icon>
+          <mat-card-title>Activity Info</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-item">
+            <strong>Type:</strong>
+            <span>{{getTypeDisplayName(activity.type)}}</span>
+          </div>
+          <div class="info-item">
+            <strong>Date & Time:</strong>
+            <span>{{activity.date | date:'full'}}</span>
+          </div>
+          <div class="info-item">
+            <strong>Location:</strong>
+            <span>{{activity.location}}</span>
+          </div>
+          <div class="info-item">
+            <strong>Status:</strong>
+            <mat-chip [color]="getStatusColor(activity.isArchived)" selected>
+              {{getStatusDisplayName(activity.isArchived)}}
+            </mat-chip>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="organizers-card" *ngIf="activity.organizers && activity.organizers.length > 0">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>people</mat-icon>
+          <mat-card-title>Organizers</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-chip-set>
+            <mat-chip *ngFor="let organizer of activity.organizers" class="organizer-chip">
+              <mat-icon>person</mat-icon>
+              {{organizer.firstName}} {{organizer.lastName}}
+            </mat-chip>
+          </mat-chip-set>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="participants-card" *ngIf="activity.participants && activity.participants.length > 0">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>group</mat-icon>
+          <mat-card-title>Participants</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-chip-set>
+            <mat-chip *ngFor="let participant of activity.participants" class="participant-chip">
+              <mat-icon>person_outline</mat-icon>
+              {{participant.firstName}} {{participant.lastName}}
+            </mat-chip>
+          </mat-chip-set>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card class="description-card" *ngIf="activity.description">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>description</mat-icon>
+        <mat-card-title>Description</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{activity.description}}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
