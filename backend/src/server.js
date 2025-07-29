@@ -23,13 +23,12 @@ connectDB();
 
 const app = express();
 
-// Middleware CORS corrigé
+// Middleware CORS corrigé avec ton URL Netlify
 app.use(cors({
   origin: [
     'http://localhost:4200',
-    'https://netlify.app',
-    'https://*.netlify.app',
-    'https://laboratory-website-production.up.railway.app'  // Tu remplaceras par ton URL Netlify
+    'https://laboratorywebsite.netlify.app',  // ✅ Ton URL Netlify exacte
+    /https:\/\/.*\.netlify\.app$/              // ✅ Pattern pour tous les sous-domaines Netlify
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
