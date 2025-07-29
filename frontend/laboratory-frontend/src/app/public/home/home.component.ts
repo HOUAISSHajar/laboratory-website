@@ -1,7 +1,6 @@
+// frontend/laboratory-frontend/src/app/public/home/home.component.ts
 import { Component, OnInit } from '@angular/core';
-import { ProjectService } from '../../core/services/project.service';
-import { PublicationService } from '../../core/services/publication.service';
-import { ActivityService } from '../../core/services/activity.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -10,59 +9,75 @@ import { ActivityService } from '../../core/services/activity.service';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  recentProjects: any[] = [];
-  recentPublications: any[] = [];
-  upcomingEvents: any[] = [];
+  // Données temporaires statiques (en attendant les services)
+  recentProjects: any[] = [
+    {
+      _id: '1',
+      title: 'Projet de Recherche en IA',
+      summary: 'Développement d\'algorithmes d\'intelligence artificielle pour l\'analyse de données scientifiques',
+      status: 'ongoing',
+      members: [1, 2, 3],
+      startDate: '2024-01-15'
+    },
+    {
+      _id: '2', 
+      title: 'Étude sur les Énergies Renouvelables',
+      summary: 'Analyse de l\'efficacité des panneaux solaires dans le climat marocain',
+      status: 'completed',
+      members: [1, 2],
+      startDate: '2023-09-01'
+    }
+  ];
 
-  constructor(
-    private projectService: ProjectService,
-    private publicationService: PublicationService,
-    private activityService: ActivityService
-  ) {}
+  recentPublications: any[] = [
+    {
+      _id: '1',
+      title: 'Machine Learning Applications in Scientific Research',
+      year: 2024,
+      type: 'article',
+      abstract: 'This paper explores the applications of machine learning in various scientific domains',
+      authors: [1, 2],
+      journal: 'Journal of Scientific Computing'
+    },
+    {
+      _id: '2',
+      title: 'Renewable Energy Systems in Morocco',
+      year: 2024,
+      type: 'conference_paper',
+      abstract: 'Analysis of renewable energy potential in North African countries',
+      authors: [1, 2, 3],
+      journal: 'International Conference on Renewable Energy'
+    }
+  ];
+
+  upcomingEvents: any[] = [
+    {
+      _id: '1',
+      title: 'Conférence Internationale sur l\'IA',
+      type: 'conference',
+      date: '2025-02-15',
+      location: 'Faculté des Sciences Ain Chock',
+      description: 'Une conférence sur les dernières avancées en intelligence artificielle et leurs applications'
+    },
+    {
+      _id: '2',
+      title: 'Séminaire sur les Énergies Vertes',
+      type: 'seminar',
+      date: '2025-03-10',
+      location: 'Amphithéâtre A',
+      description: 'Présentation des projets de recherche en cours sur les énergies renouvelables'
+    }
+  ];
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
-    this.loadRecentProjects();
-    this.loadRecentPublications();
-    this.loadUpcomingEvents();
+    // Plus besoin de charger depuis les services pour l'instant
+    console.log('🎉 HomeComponent chargé avec succès !');
   }
 
-  private loadRecentProjects() {
-    this.projectService.getAllProjects().subscribe({
-      next: (projects) => {
-        this.recentProjects = projects.slice(0, 3);
-      },
-      error: (error) => {
-        console.error('Error loading projects:', error);
-        this.recentProjects = [];
-      }
-    });
-  }
-
-  private loadRecentPublications() {
-    this.publicationService.getAllPublications().subscribe({
-      next: (publications) => {
-        this.recentPublications = publications.slice(0, 3);
-      },
-      error: (error) => {
-        console.error('Error loading publications:', error);
-        this.recentPublications = [];
-      }
-    });
-  }
-
-  private loadUpcomingEvents() {
-    this.activityService.getAllActivities().subscribe({
-      next: (activities) => {
-        // Filtrer les événements futurs
-        const now = new Date();
-        this.upcomingEvents = activities
-          .filter((activity: any) => new Date(activity.date) >= now)
-          .slice(0, 3);
-      },
-      error: (error) => {
-        console.error('Error loading activities:', error);
-        this.upcomingEvents = [];
-      }
-    });
+  // Méthode pour aller vers la page de connexion  
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }
