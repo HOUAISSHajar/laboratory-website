@@ -27,7 +27,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:4200',
-    'https://laboratorywebsite.netlify.app',  // ✅ Ton URL Netlify exacte
+    'https://websitelabofsac.netlify.app/',  // ✅ Ton URL Netlify exacte
     /https:\/\/.*\.netlify\.app$/              // ✅ Pattern pour tous les sous-domaines Netlify
   ],
   credentials: true,
