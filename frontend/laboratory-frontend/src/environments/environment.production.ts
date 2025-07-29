@@ -1,4 +1,4 @@
 export const environment = {
-    production: true,
-    apiUrl: 'http://localhost:5000/api' // Change this to your production API URL later
-  };
+  production: true,
+  apiUrl: 'https://laboratory-website-production.up.railway.app/api'  // Remplace par ton URL Railway
+};
