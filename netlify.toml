@@ -1,7 +1,7 @@
 [build]
-  base = "frontend/laboratory-frontend/"
-  command = "npm install && npm run build"
-  publish = "dist/laboratory-frontend"
+  base = "frontend/laboratory-frontend"
+  command = "npm ci && npm run build"
+  publish = "dist/laboratory-frontend/browser"
 
 [build.environment]
   NODE_VERSION = "18"
