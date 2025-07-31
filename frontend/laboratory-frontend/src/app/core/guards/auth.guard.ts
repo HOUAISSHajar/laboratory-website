@@ -1,4 +1,3 @@
-
 import { CanActivate, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../services/auth.service';
@@ -17,9 +16,8 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
+    // Rediriger vers login si pas authentifié
     this.router.navigate(['/login']);
     return false;
   }
 }
-
-

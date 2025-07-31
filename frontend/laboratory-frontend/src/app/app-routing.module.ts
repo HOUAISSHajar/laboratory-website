@@ -5,21 +5,21 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-  // Route publique en premier
+  // Routes publiques (sans authentification)
   {
     path: 'public',
     loadChildren: () => import('./public/public.module').then(m => m.PublicModule)
   },
   
-  // Login sans guard
+  // Page de login
   { 
     path: 'login', 
     component: LoginComponent 
   },
   
-  // Routes protégées
+  // Routes privées (avec authentification) - SANS le préfixe /app
   {
-    path: 'app',
+    path: '',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
     children: [
@@ -50,11 +50,6 @@ const routes: Routes = [
       {
         path: 'messages',
         loadChildren: () => import('./messages/messages.module').then(m => m.MessagesModule)
-      },
-      { 
-        path: '', 
-        redirectTo: 'dashboard', 
-        pathMatch: 'full' 
       }
     ]
   },
@@ -62,18 +57,17 @@ const routes: Routes = [
   // Redirections par défaut
   { 
     path: '', 
-    redirectTo: 'public', 
+    redirectTo: '/dashboard', 
     pathMatch: 'full' 
   },
   { 
     path: '**', 
-    redirectTo: 'public' 
+    redirectTo: '/public' 
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
-    // Ajout de cette option pour le déploiement
     useHash: false,
     enableTracing: false
   })],

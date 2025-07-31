@@ -32,32 +32,28 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.loading = true;
-      const { email, password } = this.loginForm.value;
-      
-      this.authService.login(email, password).subscribe({
-        next: () => {
-          this.loading = false;
-          this.router.navigate(['/dashboard']);
-        },
-        error: (error) => {
-          this.loading = false;
-          this.snackBar.open(
-            error.error?.message || 'Login failed. Please check your credentials.', 
-            'Close', 
-            {
-              duration: 4000,
-              panelClass: ['error-snackbar']
-            }
-          );
-        }
-      });
-    } else {
-      // Mark all fields as touched to show validation errors
-      Object.keys(this.loginForm.controls).forEach(key => {
-        this.loginForm.get(key)?.markAsTouched();
-      });
-    }
+  if (this.loginForm.valid) {
+    this.loading = true;
+    const { email, password } = this.loginForm.value;
+    
+    this.authService.login(email, password).subscribe({
+      next: () => {
+        this.loading = false;
+        // Rediriger vers le dashboard (sans /app)
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        this.loading = false;
+        this.snackBar.open(
+          error.error?.message || 'Login failed. Please check your credentials.', 
+          'Close', 
+          {
+            duration: 4000,
+            panelClass: ['error-snackbar']
+          }
+        );
+      }
+    });
   }
+}
 }
