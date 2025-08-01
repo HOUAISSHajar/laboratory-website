@@ -13,7 +13,7 @@
       <!-- Navigation Desktop -->
       <nav class="desktop-nav">
         <a mat-button 
-           routerLink="/index" 
+           routerLink="/public" 
            routerLinkActive="active" 
            [routerLinkActiveOptions]="{exact: true}"
            class="nav-link">
@@ -22,7 +22,7 @@
         </a>
         
         <a mat-button 
-           routerLink="/index/activities" 
+           routerLink="/public/activities" 
            routerLinkActive="active"
            class="nav-link">
           <mat-icon>event</mat-icon>
@@ -30,7 +30,7 @@
         </a>
         
         <a mat-button 
-           routerLink="/index/publications" 
+           routerLink="/public/publications" 
            routerLinkActive="active"
            class="nav-link">
           <mat-icon>article</mat-icon>
@@ -50,15 +50,15 @@
         </button>
         
         <mat-menu #mobileMenu="matMenu" class="mobile-menu">
-          <a mat-menu-item routerLink="/index">
+          <a mat-menu-item routerLink="/public">
             <mat-icon>home</mat-icon>
             <span>Home</span>
           </a>
-          <a mat-menu-item routerLink="/index/activities">
+          <a mat-menu-item routerLink="/public/activities">
             <mat-icon>event</mat-icon>
             <span>Activities</span>
           </a>
-          <a mat-menu-item routerLink="/index/publications">
+          <a mat-menu-item routerLink="/public/publications">
             <mat-icon>article</mat-icon>
             <span>Publications</span>
           </a>
@@ -86,9 +86,9 @@
         
         <div class="footer-section">
           <h4>Quick Links</h4>
-          <a routerLink="/index">Home</a>
-          <a routerLink="/index/activities">Activities</a>
-          <a routerLink="/index/publications">Publications</a>
+          <a routerLink="/public">Home</a>
+          <a routerLink="/public/activities">Activities</a>
+          <a routerLink="/public/publications">Publications</a>
         </div>
         
         <div class="footer-section">

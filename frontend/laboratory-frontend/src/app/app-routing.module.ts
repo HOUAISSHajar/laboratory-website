@@ -5,7 +5,7 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-  // Routes publiques (sans authentification)
+  // Routes publiques (site vitrine)
   {
     path: 'public',
     loadChildren: () => import('./public/public.module').then(m => m.PublicModule)
@@ -17,7 +17,7 @@ const routes: Routes = [
     component: LoginComponent 
   },
   
-  // Routes privées (avec authentification) - SANS le préfixe /app
+  // Routes privées (dashboard)
   {
     path: '',
     component: MainLayoutComponent,
@@ -50,6 +50,11 @@ const routes: Routes = [
       {
         path: 'messages',
         loadChildren: () => import('./messages/messages.module').then(m => m.MessagesModule)
+      },
+      { 
+        path: '', 
+        redirectTo: 'dashboard', 
+        pathMatch: 'full' 
       }
     ]
   },
@@ -57,7 +62,7 @@ const routes: Routes = [
   // Redirections par défaut
   { 
     path: '', 
-    redirectTo: '/dashboard', 
+    redirectTo: '/public', 
     pathMatch: 'full' 
   },
   { 
